@@ -1,4 +1,5 @@
 import { config } from '@/config/config';
+import { log } from '@/observability/logger';
 import { ApifyClient } from 'apify-client';
 
 interface VideoDetails {
@@ -19,17 +20,21 @@ const getVideoDetails = async (url: string): Promise<VideoDetails> => {
   });
 
   if (actorRun.status != 'SUCCEEDED') {
-    throw new Error(`unable to get video details for ${url}, process failed with status: ${actorRun.status}`);
+    log.error(`unable to get video details for ${url}, process failed with status: ${actorRun.status}`);
+    throw new Error('Unable to get video details');
   }
   const { items } = await client.dataset(actorRun.defaultDatasetId).listItems();
   if (items && items.length === 0) {
-    throw new Error(`get videos details returned empty list`);
+    log.error(`get videos details returned empty list`);
+    throw new Error('Unable to get video details');
   }
   const item = items[0];
   try {
     const videoDuration = item.videoDuration as number;
     if (videoDuration > config.video.maxDuration) {
-      throw new Error(`system does not support videos greater than ${config.video.maxDuration} seconds`);
+      const msg = `system does not support videos greater than ${config.video.maxDuration} seconds`;
+      log.error(msg);
+      throw new Error(msg);
     }
     return {
       url: item.url as string,
@@ -37,6 +42,7 @@ const getVideoDetails = async (url: string): Promise<VideoDetails> => {
       transcript: item.transcript as string,
     };
   } catch (error) {
+    log.error(error);
     throw new Error(`unable to get video details: ${error}`);
   }
 };
