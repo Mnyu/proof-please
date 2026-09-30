@@ -1,4 +1,4 @@
-import { config } from '@/config/config';
+import { config } from '@/config';
 import { LM_STUDIO } from '@/constants';
 import { log } from '@/observability/logger';
 import { ChatOpenAI } from '@langchain/openai';

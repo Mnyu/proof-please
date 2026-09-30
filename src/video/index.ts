@@ -1,4 +1,4 @@
-import { config } from '@/config/config';
+import { config } from '@/config';
 import { log } from '@/observability/logger';
 import { VideoDetails } from '@/types/types';
 import { ApifyClient } from 'apify-client';
