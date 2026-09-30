@@ -6,6 +6,13 @@ export interface VideoDetails {
   caption: string;
   transcript: string;
 }
+export const QueriesSchema = z.object({
+  semanticSearch: z.string(),
+  factCheckWeb: z.string(),
+  newsWebSearch: z.string(),
+  webSearch: z.string(),
+});
+export type Queries = z.infer<typeof QueriesSchema>;
 
 export const ExtractorResponseSchema = z.object({
   text: z.string(),
@@ -14,12 +21,7 @@ export const ExtractorResponseSchema = z.object({
     z.object({
       fact: z.string(),
       // category: z.enum(),
-      queries: z.object({
-        semanticSearch: z.string(),
-        factCheckWeb: z.string(),
-        newsWebSearch: z.string(),
-        webSearch: z.string(),
-      }),
+      queries: QueriesSchema,
     }),
   ),
 });
