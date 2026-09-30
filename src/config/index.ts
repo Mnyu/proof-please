@@ -15,7 +15,11 @@ const ConfigSchema = z.object({
   }),
   googleFactCheck: z.object({
     pageSize: z.number().nonnegative().default(3),
-    maxClaims: z.number().nonnegative().default(3),
+    maxResults: z.number().nonnegative().default(3),
+  }),
+  snopesFactCheck: z.object({
+    pageSize: z.number().nonnegative().default(3),
+    maxResults: z.number().nonnegative().default(3),
   }),
 });
 

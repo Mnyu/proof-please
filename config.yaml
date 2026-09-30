@@ -8,4 +8,8 @@ extractor:
 
 googleFactCheck:
   pageSize: 3
-  maxClaims: 3
+  maxResults: 3
+
+snopesFactCheck:
+  pageSize: 3
+  maxResults: 3

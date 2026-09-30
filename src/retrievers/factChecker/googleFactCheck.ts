@@ -34,12 +34,12 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> =>
     const claimsResponse: ClaimsResponse = await response.json();
     const claims = claimsResponse.claims;
     if (!claims || claims.length === 0) {
-      log.warn('either google fact check claims do not exist or claims are empty, returning empty results');
+      log.warn('either google fact check claims do not exist or claims are empty');
       return results;
     }
 
     for (const claim of claims) {
-      if (results.length >= config.googleFactCheck.maxClaims) {
+      if (results.length >= config.googleFactCheck.maxResults) {
         break;
       }
       if (claim.claimReviews && claim.claimReviews.length > 0) {
@@ -56,7 +56,7 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> =>
       }
     }
   } catch (error) {
-    log.error('error getting google fact check claims, returning empty results');
+    log.error('error getting google fact check claims');
     log.error(error);
   }
   log.info(`google fact checker returned ${results.length} results`);
