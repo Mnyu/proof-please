@@ -8,6 +8,11 @@ const ConfigSchema = z.object({
   video: z.object({
     maxDuration: z.number(),
   }),
+  extractor: z.object({
+    baseurl: z.string().optional(),
+    provider: z.string(),
+    model: z.string(),
+  }),
 });
 
 type Config = z.infer<typeof ConfigSchema>;

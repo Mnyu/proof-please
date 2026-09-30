@@ -1,12 +1,7 @@
 import { config } from '@/config/config';
 import { log } from '@/observability/logger';
+import { VideoDetails } from '@/types/types';
 import { ApifyClient } from 'apify-client';
-
-interface VideoDetails {
-  url: string;
-  caption: string;
-  transcript: string;
-}
 
 const client = new ApifyClient({
   token: process.env.APIFY_TOKEN,
