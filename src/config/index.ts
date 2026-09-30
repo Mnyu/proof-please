@@ -13,6 +13,10 @@ const ConfigSchema = z.object({
     provider: z.string(),
     model: z.string(),
   }),
+  googleFactCheck: z.object({
+    pageSize: z.number().nonnegative().default(3),
+    maxClaims: z.number().nonnegative().default(3),
+  }),
 });
 
 type Config = z.infer<typeof ConfigSchema>;
