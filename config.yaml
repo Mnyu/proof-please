@@ -23,3 +23,7 @@ newsDataIo:
   pageSize: 3
   maxResults: 3
   sortBy: relevancy
+
+webSearch:
+  pageSize: 5
+  maxResults: 5

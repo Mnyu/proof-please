@@ -31,6 +31,10 @@ const ConfigSchema = z.object({
     maxResults: z.number().nonnegative().default(3),
     sortBy: z.string().default('relevancy'),
   }),
+  webSearch: z.object({
+    pageSize: z.number().nonnegative().default(5),
+    maxResults: z.number().nonnegative().default(5),
+  }),
 });
 
 type Config = z.infer<typeof ConfigSchema>;
