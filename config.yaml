@@ -13,3 +13,8 @@ googleFactCheck:
 snopesFactCheck:
   pageSize: 3
   maxResults: 3
+
+newsApi:
+  pageSize: 3
+  maxResults: 3
+  sortBy: relevancy

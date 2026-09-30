@@ -21,6 +21,11 @@ const ConfigSchema = z.object({
     pageSize: z.number().nonnegative().default(3),
     maxResults: z.number().nonnegative().default(3),
   }),
+  newsApi: z.object({
+    pageSize: z.number().nonnegative().default(3),
+    maxResults: z.number().nonnegative().default(3),
+    sortBy: z.string().default('relevancy'),
+  }),
 });
 
 type Config = z.infer<typeof ConfigSchema>;
