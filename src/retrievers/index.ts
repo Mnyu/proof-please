@@ -8,5 +8,5 @@ export { retrieve as retrieveFromGoogleFactCheck } from './factChecker/googleFac
 export { retrieve as retrieveFromPibFactCheck } from './factChecker/pib';
 export { retrieve as retrieveFromSnopesFactCheck } from './factChecker/snopesWebSearch';
 export { retrieve as retrieveFromNewsApi } from './news/newsApi';
-export { retrieve as retrieveFromNesDataIo } from './news/newsDataIo';
+export { retrieve as retrieveFromNewsDataIo } from './news/newsDataIo';
 export { retrieve as retrieveFromWeb } from './webSearch/webSearch';
