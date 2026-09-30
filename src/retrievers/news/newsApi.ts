@@ -47,7 +47,7 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> =>
     }
     const articles = response.articles;
     if (!articles || articles.length === 0) {
-      log.warn('either articles do not exist or snope results are empty');
+      log.warn('either articles do not exist or articles are empty');
       return retrieverResults;
     }
     for (const article of articles) {

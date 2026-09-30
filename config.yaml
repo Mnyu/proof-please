@@ -18,3 +18,8 @@ newsApi:
   pageSize: 3
   maxResults: 3
   sortBy: relevancy
+
+newsDataIo:
+  pageSize: 3
+  maxResults: 3
+  sortBy: relevancy
