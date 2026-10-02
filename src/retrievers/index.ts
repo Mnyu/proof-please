@@ -1,7 +1,7 @@
-import { RetrieverRequest, RetrieverResults } from '@/types/types';
+import { RetrieverRequest, RetrieverResponse } from '@/types/types';
 
 interface Retriever {
-  retrieve: (request: RetrieverRequest) => Promise<RetrieverResults>;
+  retrieve: (request: RetrieverRequest) => Promise<RetrieverResponse>;
 }
 
 export { retrieve as retrieveFromGoogleFactCheck } from './factChecker/googleFactCheck';

@@ -1,7 +1,7 @@
 import { config } from '@/config';
 import { NEWS_DATA_IO } from '@/constants';
 import { log } from '@/observability/logger';
-import { RetrieverRequest, RetrieverResults } from '@/types/types';
+import { RetrieverRequest, RetrieverResponse } from '@/types/types';
 import { z } from 'zod';
 
 const ArticleSchema = z.object({
@@ -23,7 +23,7 @@ const ResponseSchema = z.object({
 
 type Response = z.infer<typeof ResponseSchema>;
 
-const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> => {
+const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> => {
   const params = new URLSearchParams({
     q: request.searchQuery,
     apiKey: process.env.NEWS_DATA_IO_API_KEY!,
@@ -31,7 +31,7 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> =>
     size: String(config.newsDataIo.pageSize),
     page: '1',
   });
-  const retrieverResults: RetrieverResults = [];
+  const retrieverResponse: RetrieverResponse = { fact: request.fact, results: [] };
   try {
     const resp = await fetch(`https://newsdata.io/api/1/latest?${params}`);
     const response: Response = await resp.json();
@@ -41,13 +41,13 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> =>
     const results = response.results;
     if (!results || results.length === 0) {
       log.warn('either results do not exist or results are empty');
-      return retrieverResults;
+      return retrieverResponse;
     }
     for (const result of results) {
-      if (retrieverResults.length >= config.newsApi.maxResults) {
+      if (retrieverResponse.results.length >= config.newsApi.maxResults) {
         break;
       }
-      retrieverResults.push({
+      retrieverResponse.results.push({
         source: NEWS_DATA_IO,
         sourceRelevance: 0.1,
         title: result.title,
@@ -60,8 +60,8 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> =>
     log.error('error getting news-data-io api results');
     log.error(error);
   }
-  log.info(`news-data-io api returned ${retrieverResults.length} results`);
-  return retrieverResults;
+  log.info(`news-data-io api returned ${retrieverResponse.results.length} results`);
+  return retrieverResponse;
 };
 
 export { retrieve };

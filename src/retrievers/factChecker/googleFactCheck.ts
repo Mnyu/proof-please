@@ -1,7 +1,7 @@
 import { config } from '@/config';
 import { GOOGLE_FACT_CHECK } from '@/constants';
 import { log } from '@/observability/logger';
-import { RetrieverRequest, RetrieverResults } from '@/types/types';
+import { RetrieverRequest, RetrieverResponse } from '@/types/types';
 import { z } from 'zod';
 
 const ClaimReviewSchema = z.object({
@@ -21,8 +21,8 @@ const ClaimsResponseSchema = z.object({
 });
 type ClaimsResponse = z.infer<typeof ClaimsResponseSchema>;
 
-const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> => {
-  const results: RetrieverResults = [];
+const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> => {
+  const retrieverResponse: RetrieverResponse = { fact: request.fact, results: [] };
   try {
     const params = new URLSearchParams({
       query: request.searchQuery,
@@ -35,16 +35,16 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> =>
     const claims = claimsResponse.claims;
     if (!claims || claims.length === 0) {
       log.warn('either google fact check claims do not exist or claims are empty');
-      return results;
+      return retrieverResponse;
     }
 
     for (const claim of claims) {
-      if (results.length >= config.googleFactCheck.maxResults) {
+      if (retrieverResponse.results.length >= config.googleFactCheck.maxResults) {
         break;
       }
       if (claim.claimReviews && claim.claimReviews.length > 0) {
         const claimReview = claim.claimReviews[0];
-        results.push({
+        retrieverResponse.results.push({
           source: GOOGLE_FACT_CHECK,
           sourceRelevance: 0.1,
           title: claimReview.title,
@@ -59,8 +59,8 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> =>
     log.error('error getting google fact check claims');
     log.error(error);
   }
-  log.info(`google fact checker returned ${results.length} results`);
-  return results;
+  log.info(`google fact checker returned ${retrieverResponse.results.length} results`);
+  return retrieverResponse;
 };
 
 export { retrieve };

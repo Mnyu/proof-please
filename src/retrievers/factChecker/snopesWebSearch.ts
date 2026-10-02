@@ -1,13 +1,13 @@
 import { config } from '@/config';
 import { SNOPES } from '@/constants';
 import { log } from '@/observability/logger';
-import { RetrieverRequest, RetrieverResults } from '@/types/types';
+import { RetrieverRequest, RetrieverResponse } from '@/types/types';
 import Exa from 'exa-js';
 
 const exa = new Exa(process.env.EXA_API_KEY);
 
-const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> => {
-  const retrieverResults: RetrieverResults = [];
+const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> => {
+  const retrieverResponse: RetrieverResponse = { fact: request.fact, results: [] };
   try {
     const response = await exa.search(request.searchQuery, {
       includeDomains: ['snopes.com'],
@@ -17,14 +17,14 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> =>
     const results = response.results;
     if (!results || results.length === 0) {
       log.warn('either snopes results do not exist or snope results are empty');
-      return retrieverResults;
+      return retrieverResponse;
     }
     for (const result of results) {
-      if (retrieverResults.length >= config.snopesFactCheck.maxResults) {
+      if (retrieverResponse.results.length >= config.snopesFactCheck.maxResults) {
         break;
       }
       const highlights = result.highlights && result.highlights.length > 0 ? result.highlights[0] : '';
-      retrieverResults.push({
+      retrieverResponse.results.push({
         source: SNOPES,
         sourceRelevance: 0.1,
         title: result.title || '',
@@ -37,8 +37,8 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> =>
     log.error('error getting snopes results');
     log.error(error);
   }
-  log.info(`snopes fact checker returned ${retrieverResults.length} results`);
-  return retrieverResults;
+  log.info(`snopes fact checker returned ${retrieverResponse.results.length} results`);
+  return retrieverResponse;
 };
 
 export { retrieve };

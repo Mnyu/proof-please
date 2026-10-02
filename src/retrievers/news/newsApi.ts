@@ -1,7 +1,7 @@
 import { config } from '@/config';
 import { NEWS_API } from '@/constants';
 import { log } from '@/observability/logger';
-import { RetrieverRequest, RetrieverResults } from '@/types/types';
+import { RetrieverRequest, RetrieverResponse } from '@/types/types';
 import { z } from 'zod';
 
 const ArticleSchema = z.object({
@@ -23,7 +23,7 @@ const ResponseSchema = z.object({
 
 type Response = z.infer<typeof ResponseSchema>;
 
-const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> => {
+const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> => {
   const date = new Date();
   const pastDate = new Date(date.getDate() - 30);
   const today = date.toISOString().split('T')[0]!;
@@ -38,7 +38,7 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> =>
     pageSize: String(config.newsApi.pageSize),
     page: '1',
   });
-  const retrieverResults: RetrieverResults = [];
+  const retrieverResponse: RetrieverResponse = { fact: request.fact, results: [] };
   try {
     const resp = await fetch(`https://newsapi.org/v2/everything?${params}`);
     const response: Response = await resp.json();
@@ -48,13 +48,13 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> =>
     const articles = response.articles;
     if (!articles || articles.length === 0) {
       log.warn('either articles do not exist or articles are empty');
-      return retrieverResults;
+      return retrieverResponse;
     }
     for (const article of articles) {
-      if (retrieverResults.length >= config.newsApi.maxResults) {
+      if (retrieverResponse.results.length >= config.newsApi.maxResults) {
         break;
       }
-      retrieverResults.push({
+      retrieverResponse.results.push({
         source: NEWS_API,
         sourceRelevance: 0.1,
         title: article.title,
@@ -67,8 +67,8 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResults> =>
     log.error('error getting news-api results');
     log.error(error);
   }
-  log.info(`news-api returned ${retrieverResults.length} results`);
-  return retrieverResults;
+  log.info(`news-api returned ${retrieverResponse.results.length} results`);
+  return retrieverResponse;
 };
 
 export { retrieve };

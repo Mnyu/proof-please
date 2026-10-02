@@ -46,3 +46,9 @@ export type RetrieverResult = z.infer<typeof RetrieverResultSchema>;
 
 export const RetrieverResultsSchema = z.array(RetrieverResultSchema);
 export type RetrieverResults = z.infer<typeof RetrieverResultsSchema>;
+
+export const RetrieverResponseSchema = z.object({
+  fact: z.string(),
+  results: RetrieverResultsSchema,
+});
+export type RetrieverResponse = z.infer<typeof RetrieverResponseSchema>;
