@@ -1,17 +1,12 @@
 import {
-  DIRECT,
-  FALSE,
+  CONTRADICTS,
   GOOGLE_FACT_CHECK,
-  MISLEADING,
   NEWS_API,
   NEWS_DATA_IO,
-  NONE,
-  OUTDATED,
-  PARTIAL,
   PIB,
+  SAYS_NOTHING,
   SNOPES,
-  TRUE,
-  UNVERIFIABLE,
+  SUPPORTS,
   WEB_SEARCH,
 } from '@/constants';
 import { z } from 'zod';
@@ -70,20 +65,24 @@ export const RetrieverResponseSchema = z.object({
 export type RetrieverResponse = z.infer<typeof RetrieverResponseSchema>;
 
 export const AnalysisAnswersSchema = z.object({
-  contextRelevance: z.object({
-    score: z.number(),
-    confidence: z.number(),
-  }),
-  claimSupport: z.object({
-    choice: z.enum([NONE, PARTIAL, DIRECT]),
-    confidence: z.number(),
-  }),
-  claimContradiction: z.object({
-    choice: z.enum([NONE, PARTIAL, DIRECT]),
-    confidence: z.number(),
-  }),
-  verdict: z.object({
-    choice: z.enum([TRUE, FALSE, MISLEADING, UNVERIFIABLE, OUTDATED]),
+  // contextRelevance: z.object({
+  //   score: z.number(),
+  //   confidence: z.number(),
+  // }),
+  // claimSupport: z.object({
+  //   choice: z.enum([NONE, PARTIAL, DIRECT]),
+  //   confidence: z.number(),
+  // }),
+  // claimContradiction: z.object({
+  //   choice: z.enum([NONE, PARTIAL, DIRECT]),
+  //   confidence: z.number(),
+  // }),
+  // verdict: z.object({
+  //   choice: z.enum([TRUE, FALSE, MISLEADING, UNVERIFIABLE, OUTDATED]),
+  //   confidence: z.number(),
+  // }),
+  relation: z.object({
+    choice: z.enum([SUPPORTS, CONTRADICTS, SAYS_NOTHING]),
     confidence: z.number(),
   }),
 });
