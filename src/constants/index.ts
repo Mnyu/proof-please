@@ -19,8 +19,9 @@ export const CONTRADICTS = 'contradicts';
 export const SAYS_NOTHING = 'says_nothing';
 
 // verdict
-export const TRUE = 'true';
-export const FALSE = 'false';
-export const MISLEADING = 'misleading';
-export const UNVERIFIABLE = 'unverifiable';
-export const OUTDATED = 'outdated';
+export const TRUE = 'TRUE';
+export const FALSE = 'FALSE';
+export const PARTIALLY_TRUE = 'PARTIALLY_TRUE';
+export const MISLEADING = 'MISLEADING';
+export const UNVERIFIABLE = 'UNVERIFIABLE';
+export const OUTDATED = 'OUTDATED';

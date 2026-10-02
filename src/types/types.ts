@@ -1,12 +1,18 @@
 import {
   CONTRADICTS,
+  FALSE,
   GOOGLE_FACT_CHECK,
+  MISLEADING,
   NEWS_API,
   NEWS_DATA_IO,
+  OUTDATED,
+  PARTIALLY_TRUE,
   PIB,
   SAYS_NOTHING,
   SNOPES,
   SUPPORTS,
+  TRUE,
+  UNVERIFIABLE,
   WEB_SEARCH,
 } from '@/constants';
 import { z } from 'zod';
@@ -99,3 +105,34 @@ export type SearchResultAnalysis = z.infer<typeof SearchResultAnalysisSchema>;
 // });
 export const AnalysisResultSchema = RetrieverResultSchema.and(AnalysisAnswersSchema);
 export type AnalysisResult = z.infer<typeof AnalysisResultSchema>;
+
+export const VerifierResultSchema = z.object({
+  verdict: z.enum([TRUE, FALSE, PARTIALLY_TRUE, MISLEADING, UNVERIFIABLE, OUTDATED]),
+  confidence: z.number().min(0).max(1),
+  rationale: z.string(),
+  support: z.array(
+    z.object({
+      argument: z.string(),
+      citation: z.string(),
+    }),
+  ),
+  contradict: z.array(
+    z.object({
+      argument: z.string(),
+      citation: z.string(),
+    }),
+  ),
+});
+
+export const VerifierResponseSchema = z.object({
+  verdict: z.enum([TRUE, FALSE, PARTIALLY_TRUE, MISLEADING, UNVERIFIABLE, OUTDATED]),
+  confidence: z.number().min(0).max(1),
+  rationale: z.string(),
+  shortResponseForUser: z.string().max(500),
+  longResponseForUser: z.string(),
+  factResults: z.record(
+    z.string().describe('the claimed fact for which the verifier result object belongs'),
+    VerifierResultSchema,
+  ),
+});
+export type VerifierResponse = z.infer<typeof VerifierResponseSchema>;

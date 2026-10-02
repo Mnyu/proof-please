@@ -13,6 +13,11 @@ const ConfigSchema = z.object({
     provider: z.string(),
     model: z.string(),
   }),
+  verifier: z.object({
+    baseurl: z.string().optional(),
+    provider: z.string(),
+    model: z.string(),
+  }),
   googleFactCheck: z.object({
     pageSize: z.number().nonnegative().default(3),
     maxResults: z.number().nonnegative().default(3),
