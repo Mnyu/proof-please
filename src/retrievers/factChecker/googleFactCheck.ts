@@ -45,6 +45,7 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> =
       if (claim.claimReviews && claim.claimReviews.length > 0) {
         const claimReview = claim.claimReviews[0];
         retrieverResponse.searchResults.push({
+          searchQuery: request.searchQuery,
           source: GOOGLE_FACT_CHECK,
           sourceRelevance: 0.1,
           title: claimReview.title,

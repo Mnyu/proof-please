@@ -49,6 +49,7 @@ export const RetrieverRequestSchema = z.object({
 export type RetrieverRequest = z.infer<typeof RetrieverRequestSchema>;
 
 export const RetrieverResultSchema = z.object({
+  searchQuery: z.string(),
   source: z.enum([GOOGLE_FACT_CHECK, PIB, SNOPES, NEWS_API, NEWS_DATA_IO, WEB_SEARCH]),
   sourceRelevance: z.number().min(0.1).max(1.0),
   title: z.string().optional(),

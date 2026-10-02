@@ -55,6 +55,7 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> =
         break;
       }
       retrieverResponse.searchResults.push({
+        searchQuery: request.searchQuery,
         source: NEWS_API,
         sourceRelevance: 0.1,
         title: article.title,

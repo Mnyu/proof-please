@@ -25,6 +25,7 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> =
       }
       const highlights = result.highlights && result.highlights.length > 0 ? result.highlights[0] : '';
       retrieverResponse.searchResults.push({
+        searchQuery: request.searchQuery,
         source: SNOPES,
         sourceRelevance: 0.1,
         title: result.title || '',
