@@ -1,4 +1,19 @@
-import { GOOGLE_FACT_CHECK, NEWS_API, NEWS_DATA_IO, PIB, SNOPES, WEB_SEARCH } from '@/constants';
+import {
+  DIRECT,
+  FALSE,
+  GOOGLE_FACT_CHECK,
+  MISLEADING,
+  NEWS_API,
+  NEWS_DATA_IO,
+  NONE,
+  OUTDATED,
+  PARTIAL,
+  PIB,
+  SNOPES,
+  TRUE,
+  UNVERIFIABLE,
+  WEB_SEARCH,
+} from '@/constants';
 import { z } from 'zod';
 
 export interface VideoDetails {
@@ -49,6 +64,38 @@ export type RetrieverResults = z.infer<typeof RetrieverResultsSchema>;
 
 export const RetrieverResponseSchema = z.object({
   fact: z.string(),
-  results: RetrieverResultsSchema,
+  searchResults: RetrieverResultsSchema,
 });
 export type RetrieverResponse = z.infer<typeof RetrieverResponseSchema>;
+
+export const AnalysisAnswersSchema = z.object({
+  contextRelevance: z.object({
+    score: z.number(),
+    confidence: z.number(),
+  }),
+  claimSupport: z.object({
+    choice: z.enum([NONE, PARTIAL, DIRECT]),
+    confidence: z.number(),
+  }),
+  claimContradiction: z.object({
+    choice: z.enum([NONE, PARTIAL, DIRECT]),
+    confidence: z.number(),
+  }),
+  verdict: z.object({
+    choice: z.enum([TRUE, FALSE, MISLEADING, UNVERIFIABLE, OUTDATED]),
+    confidence: z.number(),
+  }),
+});
+
+export const SearchResultAnalysisSchema = z.object({
+  model: z.string(),
+  answers: AnalysisAnswersSchema,
+});
+export type SearchResultAnalysis = z.infer<typeof SearchResultAnalysisSchema>;
+
+// export const AnalysisResultSchema = z.object({
+//   ...RetrieverResultSchema,
+//   ...AnalysisAnswersSchema,
+// });
+export const AnalysisResultSchema = RetrieverResultSchema.and(AnalysisAnswersSchema);
+export type AnalysisResult = z.infer<typeof AnalysisResultSchema>;

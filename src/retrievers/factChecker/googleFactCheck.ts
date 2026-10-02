@@ -22,7 +22,7 @@ const ClaimsResponseSchema = z.object({
 type ClaimsResponse = z.infer<typeof ClaimsResponseSchema>;
 
 const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> => {
-  const retrieverResponse: RetrieverResponse = { fact: request.fact, results: [] };
+  const retrieverResponse: RetrieverResponse = { fact: request.fact, searchResults: [] };
   try {
     const params = new URLSearchParams({
       query: request.searchQuery,
@@ -39,12 +39,12 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> =
     }
 
     for (const claim of claims) {
-      if (retrieverResponse.results.length >= config.googleFactCheck.maxResults) {
+      if (retrieverResponse.searchResults.length >= config.googleFactCheck.maxResults) {
         break;
       }
       if (claim.claimReviews && claim.claimReviews.length > 0) {
         const claimReview = claim.claimReviews[0];
-        retrieverResponse.results.push({
+        retrieverResponse.searchResults.push({
           source: GOOGLE_FACT_CHECK,
           sourceRelevance: 0.1,
           title: claimReview.title,
@@ -59,7 +59,7 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> =
     log.error('error getting google fact check claims');
     log.error(error);
   }
-  log.info(`google fact checker returned ${retrieverResponse.results.length} results`);
+  log.info(`google fact checker returned ${retrieverResponse.searchResults.length} results`);
   return retrieverResponse;
 };
 

@@ -7,7 +7,7 @@ import Exa from 'exa-js';
 const exa = new Exa(process.env.EXA_API_KEY);
 
 const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> => {
-  const retrieverResponse: RetrieverResponse = { fact: request.fact, results: [] };
+  const retrieverResponse: RetrieverResponse = { fact: request.fact, searchResults: [] };
   try {
     const response = await exa.search(request.searchQuery, {
       includeDomains: ['snopes.com'],
@@ -20,11 +20,11 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> =
       return retrieverResponse;
     }
     for (const result of results) {
-      if (retrieverResponse.results.length >= config.snopesFactCheck.maxResults) {
+      if (retrieverResponse.searchResults.length >= config.snopesFactCheck.maxResults) {
         break;
       }
       const highlights = result.highlights && result.highlights.length > 0 ? result.highlights[0] : '';
-      retrieverResponse.results.push({
+      retrieverResponse.searchResults.push({
         source: SNOPES,
         sourceRelevance: 0.1,
         title: result.title || '',
@@ -37,7 +37,7 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> =
     log.error('error getting snopes results');
     log.error(error);
   }
-  log.info(`snopes fact checker returned ${retrieverResponse.results.length} results`);
+  log.info(`snopes fact checker returned ${retrieverResponse.searchResults.length} results`);
   return retrieverResponse;
 };
 

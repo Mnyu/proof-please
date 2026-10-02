@@ -11,6 +11,7 @@
   "dependencies": {
     "@langchain/core": "^1.2.13",
     "@langchain/openai": "^1.6.0",
+    "@typesafe-ai/sdk": "^0.6.0",
     "apify-client": "^2.25.0",
     "exa-js": "^2.23.0",
     "langchain": "^1.5.14",

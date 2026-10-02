@@ -38,7 +38,7 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> =
     pageSize: String(config.newsApi.pageSize),
     page: '1',
   });
-  const retrieverResponse: RetrieverResponse = { fact: request.fact, results: [] };
+  const retrieverResponse: RetrieverResponse = { fact: request.fact, searchResults: [] };
   try {
     const resp = await fetch(`https://newsapi.org/v2/everything?${params}`);
     const response: Response = await resp.json();
@@ -51,10 +51,10 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> =
       return retrieverResponse;
     }
     for (const article of articles) {
-      if (retrieverResponse.results.length >= config.newsApi.maxResults) {
+      if (retrieverResponse.searchResults.length >= config.newsApi.maxResults) {
         break;
       }
-      retrieverResponse.results.push({
+      retrieverResponse.searchResults.push({
         source: NEWS_API,
         sourceRelevance: 0.1,
         title: article.title,
@@ -67,7 +67,7 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> =
     log.error('error getting news-api results');
     log.error(error);
   }
-  log.info(`news-api returned ${retrieverResponse.results.length} results`);
+  log.info(`news-api returned ${retrieverResponse.searchResults.length} results`);
   return retrieverResponse;
 };
 

@@ -12,3 +12,13 @@ export const GOOGLE_FACT_CHECK = 'Google Fact Check';
 export const NEWS_API = 'News API';
 export const NEWS_DATA_IO = 'News Data IO';
 export const WEB_SEARCH = 'Web Search';
+
+// analysis
+export const NONE = 'none';
+export const PARTIAL = 'partial';
+export const DIRECT = 'direct';
+export const TRUE = 'true';
+export const FALSE = 'false';
+export const MISLEADING = 'misleading';
+export const UNVERIFIABLE = 'unverifiable';
+export const OUTDATED = 'outdated';

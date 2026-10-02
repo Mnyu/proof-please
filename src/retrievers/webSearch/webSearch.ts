@@ -7,7 +7,7 @@ import Exa from 'exa-js';
 const exa = new Exa(process.env.EXA_API_KEY);
 
 const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> => {
-  const retrieverResponse: RetrieverResponse = { fact: request.fact, results: [] };
+  const retrieverResponse: RetrieverResponse = { fact: request.fact, searchResults: [] };
   try {
     const response = await exa.search(request.searchQuery, {
       numResults: config.webSearch.pageSize,
@@ -19,11 +19,11 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> =
       return retrieverResponse;
     }
     for (const result of results) {
-      if (retrieverResponse.results.length >= config.webSearch.maxResults) {
+      if (retrieverResponse.searchResults.length >= config.webSearch.maxResults) {
         break;
       }
       const highlights = result.highlights && result.highlights.length > 0 ? result.highlights[0] : '';
-      retrieverResponse.results.push({
+      retrieverResponse.searchResults.push({
         source: WEB_SEARCH,
         sourceRelevance: 0.1,
         title: result.title || '',
@@ -36,7 +36,7 @@ const retrieve = async (request: RetrieverRequest): Promise<RetrieverResponse> =
     log.error('error getting web search results');
     log.error(error);
   }
-  log.info(`web search returned ${retrieverResponse.results.length} results`);
+  log.info(`web search returned ${retrieverResponse.searchResults.length} results`);
   return retrieverResponse;
 };
 
