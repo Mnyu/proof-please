@@ -1,12 +1,18 @@
-import { pgEnum, pgTable, uuid, text, smallint, jsonb, timestamp, index } from 'drizzle-orm/pg-core';
+import { pgEnum, pgTable, text, smallint, jsonb, timestamp, index, char } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
+import { user } from './authSchema';
 
 export const factCheckJobStatus = pgEnum('fact_check_job_status', ['QUEUED', 'IN_PROGRESS', 'COMPLETED', 'FAILED']);
 
-export const factCheckJobs = pgTable(
-  'fact_check_jobs',
+export const factCheckJob = pgTable(
+  'fact_check_job',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
-    userId: uuid('user_id').notNull(),
+    id: char('id', { length: 64 }).primaryKey(),
+    userId: text('user_id')
+      .references(() => user.id, {
+        onDelete: 'cascade',
+      })
+      .notNull(),
     reelUrl: text('reel_url').notNull(),
     status: factCheckJobStatus('status').notNull().default('QUEUED'),
     progress: smallint('progress').notNull().default(0),
@@ -39,3 +45,13 @@ export const factCheckJobs = pgTable(
     index('fact_check_jobs_user_created_idx').on(table.userId, table.createdAt),
   ],
 );
+
+export const factCheckJobRelations = relations(factCheckJob, ({ one }) => ({
+  user: one(user, {
+    fields: [factCheckJob.userId],
+    references: [user.id],
+  }),
+}));
+
+export type FactCheckJob = typeof factCheckJob.$inferSelect;
+export type NewFactCheckJob = typeof factCheckJob.$inferInsert;

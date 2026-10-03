@@ -13,11 +13,13 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@better-auth/api-key": "^1.7.7",
     "@langchain/core": "^1.2.13",
     "@langchain/openai": "^1.6.0",
     "@types/bun": "^1.4.2",
     "@typesafe-ai/sdk": "^0.6.0",
     "apify-client": "^2.25.0",
+    "better-auth": "^1.7.7",
     "bullmq": "^6.3.11",
     "drizzle-orm": "^0.45.3",
     "exa-js": "^2.23.0",
