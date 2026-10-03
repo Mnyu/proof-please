@@ -1,17 +1,18 @@
 import { config } from '@/config';
 import { factCheckJobQueue } from '@/queue';
 import { checkFactCheckJobUserRateLimit } from '@/rateLimit';
+import { FactCheckResponse } from '@/types/api';
 import { createSHA256Hash } from '@/utils';
 
-const submitFactCheckJob = async (userId: string, reelUrl: string) => {
+const submitFactCheckJob = async (userId: string, reelUrl: string): Promise<FactCheckResponse> => {
   const rateLimit = await checkFactCheckJobUserRateLimit(userId);
   if (!rateLimit.allowed) {
     return {
-      status: 429,
-      body: {
-        error: 'RATE_LIMIT_EXCEEDED',
-        retryAfter: rateLimit.retryAfter,
-      },
+      jobId: '',
+      jobStatus: '',
+      requestsRemaining: 0,
+      rateLimitExceeded: true,
+      retryAfter: rateLimit.retryAfter,
     };
   }
   const job = await factCheckJobQueue.add(
@@ -21,12 +22,10 @@ const submitFactCheckJob = async (userId: string, reelUrl: string) => {
   );
 
   return {
-    status: 202,
-    body: {
-      jobId: job.id,
-      status: 'QUEUED',
-      remainingRequests: rateLimit.remaining,
-    },
+    jobId: job.id || '',
+    jobStatus: 'QUEUED',
+    requestsRemaining: rateLimit.remaining,
+    rateLimitExceeded: false,
   };
 };
 
