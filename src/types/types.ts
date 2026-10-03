@@ -144,3 +144,9 @@ export const VerifierResponseSchema = z.object({
   ),
 });
 export type VerifierResponse = z.infer<typeof VerifierResponseSchema>;
+
+export const FactCheckJobSchema = z.object({
+  userId: z.string(),
+  reelUrl: z.string(),
+});
+export type FactCheckJob = z.infer<typeof FactCheckJobSchema>;

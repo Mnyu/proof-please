@@ -1,3 +1,10 @@
+factCheckJobQueue:
+  name: fact-check
+  requestsWindowInSeconds: 3600 # 1 hour
+  maxRequestsPerUser: 5
+  jobName: fact-check-job
+  concurrency: 3
+
 video:
   maxDuration: 60 # seconds
 

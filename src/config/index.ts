@@ -5,6 +5,13 @@ import YAML from 'yaml';
 import { z } from 'zod';
 
 const ConfigSchema = z.object({
+  factCheckJobQueue: z.object({
+    name: z.string().default('fact-check'),
+    requestsWindowInSeconds: z.number().default(3600),
+    maxRequestsPerUser: z.number().default(5),
+    jobName: z.string().default('fact-check-job'),
+    concurrency: z.number().default(3),
+  }),
   video: z.object({
     maxDuration: z.number(),
   }),
