@@ -33,6 +33,34 @@ services:
       retries: 10
     volumes:
       - postgres_data:/var/lib/postgresql
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    hostname: app
+    container_name: app
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    hostname: worker
+    container_name: worker
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
 volumes:
   redis_data:
   postgres_data:
