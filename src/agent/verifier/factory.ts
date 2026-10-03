@@ -218,4 +218,13 @@ const buildVerifierAgent = async () => {
   });
 };
 
-export { buildVerifierAgent };
+let verifierAgent = await buildVerifierAgent();
+
+const getVerifierAgent = async () => {
+  if (verifierAgent) {
+    return verifierAgent;
+  }
+  return buildVerifierAgent();
+};
+
+export { getVerifierAgent };

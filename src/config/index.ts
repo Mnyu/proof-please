@@ -19,6 +19,7 @@ const ConfigSchema = z.object({
     baseurl: z.string().optional(),
     provider: z.string(),
     model: z.string(),
+    maxClaimedFacts: z.number().nonnegative().default(4),
   }),
   verifier: z.object({
     baseurl: z.string().optional(),

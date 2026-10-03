@@ -22,24 +22,25 @@ export interface VideoDetails {
   caption: string;
   transcript: string;
 }
-export const QueriesSchema = z.object({
+export const SearchQueriesSchema = z.object({
   semanticSearch: z.string(),
-  factCheckWeb: z.string(),
+  factCheckWebSearch: z.string(),
   newsWebSearch: z.string(),
   webSearch: z.string(),
 });
-export type Queries = z.infer<typeof QueriesSchema>;
+export type SearchQueries = z.infer<typeof SearchQueriesSchema>;
+
+export const ClaimedFactSchema = z.object({
+  fact: z.string(),
+  // category: z.enum(),
+  searchQueries: SearchQueriesSchema,
+});
+export type ClaimedFact = z.infer<typeof ClaimedFactSchema>;
 
 export const ExtractorResponseSchema = z.object({
   text: z.string(),
   caption: z.string(),
-  claimedFacts: z.array(
-    z.object({
-      fact: z.string(),
-      // category: z.enum(),
-      queries: QueriesSchema,
-    }),
-  ),
+  claimedFacts: z.array(ClaimedFactSchema),
 });
 export type ExtractorResponse = z.infer<typeof ExtractorResponseSchema>;
 
@@ -105,6 +106,13 @@ export type SearchResultAnalysis = z.infer<typeof SearchResultAnalysisSchema>;
 // });
 export const AnalysisResultSchema = RetrieverResultSchema.and(AnalysisAnswersSchema);
 export type AnalysisResult = z.infer<typeof AnalysisResultSchema>;
+
+export const ClaimedFactWithVerifiableSourcesSchema = z.object({
+  claimedFact: z.string(),
+  searchQueries: SearchQueriesSchema,
+  verifiableSources: z.array(AnalysisResultSchema),
+});
+export type ClaimedFactWithVerifiableSources = z.infer<typeof ClaimedFactWithVerifiableSourcesSchema>;
 
 export const VerifierResultSchema = z.object({
   verdict: z.enum([TRUE, FALSE, PARTIALLY_TRUE, MISLEADING, UNVERIFIABLE, OUTDATED]),

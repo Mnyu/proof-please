@@ -4,7 +4,7 @@ import { choice, TypeSafeClient } from '@typesafe-ai/sdk';
 
 const client = new TypeSafeClient();
 
-const runAnalysis = async (retriverResponse: RetrieverResponse) => {
+const analyse = async (retriverResponse: RetrieverResponse) => {
   const fact = retriverResponse.fact;
   const searchResults = retriverResponse.searchResults;
   const analysisResults: AnalysisResult[] = [];
@@ -95,4 +95,4 @@ const analyseSearchResult = async (claimedFact: string, searchResult: RetrieverR
   };
 };
 
-export { runAnalysis };
+export { analyse };

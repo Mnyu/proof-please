@@ -2,25 +2,30 @@ import { config } from '@/config';
 import { JobStatus } from '@/constants';
 import { redis } from '@/lib/redis';
 import { log } from '@/observability/logger';
-import { updateFactCheckJobStatus } from '@/repository';
+import { updateFactCheckJobResultAndStatus, updateFactCheckJobStatus } from '@/repository';
+import { runFactCheckJob } from '@/service';
 import { FactCheckJob } from '@/types/types';
 import { Worker } from 'bullmq';
 
 const worker = new Worker<FactCheckJob>(
   config.factCheckJobQueue.name,
   async (job) => {
+    //TODO : handle this function and its code properly
     const { userId, reelUrl } = job.data;
-    log.info(`Processing ${job.id} for user ${userId}`);
-
-    //TODO : FUNCTION TO RUN PIPELINE
     const jobId = job.id;
     if (!jobId) {
       throw new Error('no job id present');
     }
+    log.info(`Processing ${job.id} for user ${userId}`);
+
     await updateFactCheckJobStatus(jobId, JobStatus.IN_PROGRESS);
 
+    const response = await runFactCheckJob(reelUrl);
+    log.info(JSON.stringify(response, null, 2));
+
+    await updateFactCheckJobResultAndStatus(jobId, response, JobStatus.COMPLETED);
+
     log.info(`Completed ${job.id}`);
-    throw new Error('testing');
     // return { success: true };
     return { success: false };
   },
@@ -35,11 +40,11 @@ worker.on('ready', () => {
 });
 
 worker.on('completed', async (job, result) => {
-  const jobId = job.id;
-  if (!jobId) {
-    throw new Error('no job id present');
-  }
-  await updateFactCheckJobStatus(jobId, JobStatus.COMPLETED);
+  // const jobId = job.id;
+  // if (!jobId) {
+  //   throw new Error('no job id present');
+  // }
+  // await updateFactCheckJobStatus(jobId, JobStatus.COMPLETED);
   log.info({ jobId: job.id, result }, 'Fact-check job completed');
 });
 
