@@ -25,3 +25,11 @@ export const PARTIALLY_TRUE = 'PARTIALLY_TRUE';
 export const MISLEADING = 'MISLEADING';
 export const UNVERIFIABLE = 'UNVERIFIABLE';
 export const OUTDATED = 'OUTDATED';
+
+// app
+export enum JobStatus {
+  QUEUED = 'QUEUED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
+}

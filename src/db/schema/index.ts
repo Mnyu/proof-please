@@ -1,2 +1,2 @@
 export * from './authSchema';
-export * from './factCheckJobs';
+export * from './factCheckJobSchema';
