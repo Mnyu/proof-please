@@ -1,7 +1,7 @@
 import { getVerifierLLM } from '@/llm/factory';
 import { log } from '@/observability/logger';
 import { VerifierResponseSchema } from '@/types/types';
-import { createAgent } from 'langchain';
+import { createAgent, modelCallLimitMiddleware } from 'langchain';
 
 const VERIFIER_SYSTEM_PROMPT = `You are the Final Fact Verification Agent. 
 Your task is to determine the final verdict for one or more factual claims by carefully synthesizing the evidence provided by multiple independent sources.
@@ -204,7 +204,7 @@ OUTPUT FORMAT:
 Return ONLY structred output conforming exactly to the provided schema.
 `;
 
-const VERIFIER_SYSTEM_PROMPT2 = `You are the Final Fact Verification Agent. Your task is to determine the final verdict for one or more factual claims by carefully synthesizing the evidence provided by multiple independent sources. Must Do for all factual claims`;
+const VERIFIER_SYSTEM_PROMPT2 = `You are the Final Fact Verification Agent for an Instagram Reel Transcription.`;
 
 const buildVerifierAgent = async () => {
   const llm = getVerifierLLM();
@@ -212,7 +212,7 @@ const buildVerifierAgent = async () => {
   return createAgent({
     model: llm,
     tools: [],
-    middleware: [], // check if any middleware required
+    middleware: [modelCallLimitMiddleware({ runLimit: 3, exitBehavior: 'end' })],
     systemPrompt: VERIFIER_SYSTEM_PROMPT2,
     responseFormat: VerifierResponseSchema,
   });

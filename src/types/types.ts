@@ -110,26 +110,34 @@ export const VerifierResultSchema = z.object({
   verdict: z.enum([TRUE, FALSE, PARTIALLY_TRUE, MISLEADING, UNVERIFIABLE, OUTDATED]),
   confidence: z.number().min(0).max(1),
   rationale: z.string(),
-  support: z.array(
-    z.object({
-      argument: z.string(),
-      citation: z.string(),
-    }),
-  ),
-  contradict: z.array(
-    z.object({
-      argument: z.string(),
-      citation: z.string(),
-    }),
-  ),
+  support: z
+    .array(
+      z.object({
+        argument: z.string(),
+        citation: z.string(),
+      }),
+    )
+    .max(3),
+  contradict: z
+    .array(
+      z.object({
+        argument: z.string(),
+        citation: z.string(),
+      }),
+    )
+    .max(3),
 });
 
 export const VerifierResponseSchema = z.object({
   verdict: z.enum([TRUE, FALSE, PARTIALLY_TRUE, MISLEADING, UNVERIFIABLE, OUTDATED]),
   confidence: z.number().min(0).max(1),
-  rationale: z.string(),
-  shortResponseForUser: z.string().max(500),
-  longResponseForUser: z.string(),
+  rationale: z.array(z.string()).describe('array of all the rationale points that lead to the verdict'),
+  // directMessageForInstagram: z
+  //   .string()
+  //   .max(1000)
+  //   .describe(
+  //     'based on factResults, derive a message for instagram highlighting verdict of each fact along with citation',
+  //   ),
   factResults: z.record(
     z.string().describe('the claimed fact for which the verifier result object belongs'),
     VerifierResultSchema,
