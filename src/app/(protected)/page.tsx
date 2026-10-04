@@ -1,7 +1,7 @@
 import ThemeToggle from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 
-const page = () => {
+const Home = () => {
   return (
     <>
       <ThemeToggle showText={false} />
@@ -10,4 +10,4 @@ const page = () => {
     </>
   );
 };
-export default page;
+export default Home;
