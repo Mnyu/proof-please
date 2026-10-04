@@ -5,7 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: rgb(249, 250, 251);
+  /* --background: rgb(249, 250, 251); */
+  --background: #f8fafc;
   --foreground: rgb(18, 24, 30);
   --card: rgb(255, 255, 255);
   --card-foreground: rgb(18, 24, 30);
@@ -176,8 +177,26 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
+  /* body {
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
+  } */
+  /* body {
+    @apply text-foreground;
+    letter-spacing: var(--tracking-normal);
+
+    background:
+      radial-gradient(circle at 0% 15%, rgba(219, 237, 255, 0.55) 0%, rgba(219, 237, 255, 0.2) 22%, transparent 45%),
+      radial-gradient(circle at 100% 20%, rgba(225, 240, 255, 0.55) 0%, rgba(225, 240, 255, 0.18) 25%, transparent 48%),
+      radial-gradient(circle at 50% 100%, rgba(232, 243, 255, 0.4) 0%, transparent 45%), #f8fafc;
+  } */
+  body {
+    @apply text-foreground;
+    letter-spacing: var(--tracking-normal);
+
+    background:
+      radial-gradient(900px circle at 0% 20%, rgba(220, 238, 255, 0.45), transparent 65%),
+      radial-gradient(900px circle at 100% 15%, rgba(225, 241, 255, 0.45), transparent 65%),
+      radial-gradient(1000px circle at 50% 100%, rgba(235, 245, 255, 0.35), transparent 70%), #fafcff;
   }
 }
