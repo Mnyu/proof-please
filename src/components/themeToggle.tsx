@@ -27,8 +27,8 @@ const ThemeToggle = ({ showText }: ThemeToggleProps) => {
 
   return (
     <Button
-      variant='ghost'
-      className='w-full flex items-center justify-start cursor-pointer hover:!bg-sidebar-accent mx-0 px-2'
+      variant='outline'
+      className='flex items-center justify-start cursor-pointer'
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
     >
       {theme === 'dark' ? <Sun /> : <Moon />}

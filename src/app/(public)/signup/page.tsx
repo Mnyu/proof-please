@@ -1,5 +1,6 @@
 'use client';
 
+import Logo from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
@@ -51,11 +52,7 @@ const SignUp = () => {
 
   return (
     <>
-      <div className='flex justify-center items-center'>
-        <div className='text-4xl xl:text-5xl pt-5 font-serif'>
-          Proof <span className='text-primary'>Please!</span>
-        </div>
-      </div>
+      <Logo />
       <div className='w-full h-full grid grid-cols-1 lg:grid-cols-2'>
         <div className='relative h-full w-full hidden lg:block'>
           <Image src='/images/hero.png' alt='login-image' fill priority className='object-contain' sizes='100%' />
