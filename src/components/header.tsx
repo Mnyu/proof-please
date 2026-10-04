@@ -47,11 +47,13 @@ const Header = ({ user }: HeaderProps) => {
       </div>
       <div className='flex items-center gap-2'>
         <Logout showText={true} />
-        <ThemeToggle showText={false} />
-        {/* <Avatar className='h-8 w-8 rounded-lg grayscale'>
+        {/* <ThemeToggle showText={false} /> */}
+        <Avatar className='h-8 w-8 rounded-xl'>
           <AvatarImage src={user.image ? user.image : ''} alt={user.name} />
-          <AvatarFallback className='rounded-lg'>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
-        </Avatar> */}
+          <AvatarFallback className='rounded-xl bg-primary text-primary-foreground'>
+            {user.name.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
       </div>
     </header>
   );
