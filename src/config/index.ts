@@ -10,7 +10,10 @@ const ConfigSchema = z.object({
     requestsWindowInSeconds: z.number().default(3600),
     maxRequestsPerUser: z.number().default(5),
     jobName: z.string().default('fact-check-job'),
-    concurrency: z.number().default(3),
+    concurrency: z.number().default(1),
+    retryAttempts: z.number().default(1),
+    backOffType: z.string().default('exponential'),
+    backOffDelayMilliseconds: z.number().default(5000),
   }),
   video: z.object({
     maxDuration: z.number(),

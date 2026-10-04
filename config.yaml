@@ -4,6 +4,9 @@ factCheckJobQueue:
   maxRequestsPerUser: 5
   jobName: fact-check-job
   concurrency: 1
+  retryAttempts: 1
+  backOffType: exponential
+  backOffDelayMilliseconds: 5000
 
 video:
   maxDuration: 60 # seconds
