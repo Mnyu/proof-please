@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Journal',
-  description: 'Self-service trading journal',
+  title: 'ProofPlease',
+  description: 'verify claims with real evidence.',
 };
 
 export default function RootLayout({

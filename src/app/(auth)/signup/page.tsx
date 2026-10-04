@@ -105,7 +105,7 @@ const SignUp = () => {
                           {...field}
                           id='signin-email'
                           aria-invalid={fieldState.invalid}
-                          placeholder='rahul@journal.com'
+                          placeholder='rahul.sharma@gmail.com'
                           autoComplete='off'
                           className='h-12 px-4'
                         />
