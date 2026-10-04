@@ -18,5 +18,9 @@ export const SignInSchema = z.object({
     .min(8, 'Password must be at least 8 characters.')
     .max(20, 'password must be at most 20 characters.'),
 });
-
 export type SignInInput = z.infer<typeof SignInSchema>;
+
+export const ProofPleaseSchema = z.object({
+  reelUrl: z.string(),
+});
+export type ProofPlease = z.infer<typeof ProofPleaseSchema>;

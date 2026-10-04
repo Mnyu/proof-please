@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'ProofPlease',
+  title: 'Proof Please',
   description: 'verify claims with real evidence.',
 };
 
