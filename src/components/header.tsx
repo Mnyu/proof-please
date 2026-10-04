@@ -21,7 +21,7 @@ const Header = ({ user }: HeaderProps) => {
   return (
     <header className='flex items-center justify-between px-2 py-2 border-b'>
       <div className='flex justify-center items-center'>
-        <Link className='text-xl xl:text-2xl font-serif' href='/docs'>
+        <Link className='text-xl xl:text-2xl font-serif' href='/'>
           Proof <span className='text-primary'>Please</span>
         </Link>
       </div>
