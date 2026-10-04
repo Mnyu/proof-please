@@ -1,5 +1,5 @@
 {
-  "id": "44aae5a1-6a87-4f15-8e25-e2f02a727385",
+  "id": "47a5a1d5-c1a7-49e0-9b22-53e16d51210f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -580,12 +580,11 @@
           "notNull": true,
           "default": "'QUEUED'"
         },
-        "progress": {
-          "name": "progress",
-          "type": "smallint",
+        "processing_duration_ms": {
+          "name": "processing_duration_ms",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "default": 0
+          "notNull": false
         },
         "error": {
           "name": "error",

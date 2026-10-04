@@ -5,7 +5,7 @@ import { requireSession } from '@/lib/auth-session';
 import { log } from '@/observability/logger';
 import { factCheckJobQueue } from '@/queue';
 import { checkFactCheckJobUserRateLimit } from '@/rateLimit';
-import { saveFactCheckJob } from '@/repository';
+import { getFactCheckJob, saveFactCheckJob } from '@/repository';
 import { FactCheckResponse } from '@/types/api';
 import {
   ClaimedFact,
@@ -19,6 +19,7 @@ import { getTrialRun, getVideoDetails } from '@/video';
 import { HumanMessage } from 'langchain';
 import { getVerifiableSources } from './fact.service';
 import { getVerifierAgent } from '@/agent/verifier/factory';
+import { JobStatus } from '@/constants';
 
 const submitFactCheckJob = async (userId: string, reelUrl: string): Promise<FactCheckResponse> => {
   // TODO : get userId from session instead of userId parameter
@@ -28,7 +29,17 @@ const submitFactCheckJob = async (userId: string, reelUrl: string): Promise<Fact
     throw new RateLimitError(`rate limited exceeded, retry after ${rateLimit.retryAfter} seconds`);
   }
   const jobId = createSHA256Hash(`${userId}:${reelUrl}`);
-  const factCheckJob = await saveFactCheckJob({ id: jobId, userId: userId, reelUrl: reelUrl });
+  let factCheckJob = await getFactCheckJob(jobId);
+  if (factCheckJob && factCheckJob.status === JobStatus.COMPLETED) {
+    return {
+      jobId: factCheckJob.id,
+      jobStatus: factCheckJob.status,
+      requestsRemaining: rateLimit.remaining,
+    };
+  }
+  if (!factCheckJob) {
+    factCheckJob = await saveFactCheckJob({ id: jobId, userId: userId, reelUrl: reelUrl });
+  }
   const job = await factCheckJobQueue.add(
     config.factCheckJobQueue.jobName,
     { userId: factCheckJob.userId, reelUrl: factCheckJob.reelUrl },

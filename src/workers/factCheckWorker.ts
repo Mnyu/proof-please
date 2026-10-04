@@ -2,70 +2,80 @@ import { config } from '@/config';
 import { JobStatus } from '@/constants';
 import { redis } from '@/lib/redis';
 import { log } from '@/observability/logger';
-import { updateFactCheckJobResultAndStatus, updateFactCheckJobStatus } from '@/repository';
+import { updateFactCheckJob } from '@/repository';
 import { runFactCheckJob } from '@/service';
 import { FactCheckJob } from '@/types/types';
-import { Worker } from 'bullmq';
+import { getDurationInMs } from '@/utils';
+import { Job, Worker } from 'bullmq';
 
-const worker = new Worker<FactCheckJob>(
-  config.factCheckJobQueue.name,
-  async (job) => {
-    //TODO : handle this function and its code properly
-    const { userId, reelUrl } = job.data;
-    const jobId = job.id;
-    if (!jobId) {
-      throw new Error('no job id present');
-    }
-    log.info(`Processing ${job.id} for user ${userId}`);
-
-    await updateFactCheckJobStatus(jobId, JobStatus.IN_PROGRESS);
-
+const processor = async (job: Job) => {
+  const startTime = performance.now();
+  const { userId, reelUrl } = job.data;
+  const jobId = job.id;
+  if (!jobId) {
+    throw new Error('no job id found to process');
+  }
+  log.info(`Started processing fact-chek job: ${jobId}`);
+  try {
+    await updateFactCheckJob(jobId, { status: JobStatus.IN_PROGRESS });
     const response = await runFactCheckJob(reelUrl);
+    log.info(`Response for fact-chek job: ${jobId}`);
     log.info(JSON.stringify(response, null, 2));
 
-    await updateFactCheckJobResultAndStatus(jobId, response, JobStatus.COMPLETED);
+    await updateFactCheckJob(jobId, {
+      status: JobStatus.COMPLETED,
+      result: response,
+      processingDurationMs: getDurationInMs(startTime),
+    });
+    log.info(`Completed processing fact-chek job: ${jobId}`);
+  } catch (error) {
+    await updateFactCheckJob(jobId, {
+      status: JobStatus.FAILED,
+      processingDurationMs: getDurationInMs(startTime),
+    });
+    throw error;
+  }
+};
 
-    log.info(`Completed ${job.id}`);
-    // return { success: true };
-    return { success: false };
-  },
-  {
-    connection: redis,
-    concurrency: config.factCheckJobQueue.concurrency, // Number of fact checks running simultaneously
-  },
-);
+const workerOptions = {
+  connection: redis,
+  concurrency: config.factCheckJobQueue.concurrency, // Number of fact checks running simultaneously
+};
 
+/* creates a long-running process that stays alive 
+and continuously listens to the queue and executes jobs from it.
+*/
+const worker = new Worker<FactCheckJob>(config.factCheckJobQueue.name, processor, workerOptions);
+
+/* Worker events : 
+    ready & error = worker level events
+    completed, failed and stalled = job level events
+*/
 worker.on('ready', () => {
+  // called when the worker has successfully initialized and is ready to process jobs
   log.info('Fact-check worker is ready');
 });
 
+worker.on('error', (error) => {
+  log.error('Fact-check worker error', error);
+});
+
 worker.on('completed', async (job, result) => {
-  // const jobId = job.id;
-  // if (!jobId) {
-  //   throw new Error('no job id present');
-  // }
-  // await updateFactCheckJobStatus(jobId, JobStatus.COMPLETED);
-  log.info({ jobId: job.id, result }, 'Fact-check job completed');
+  // called whenever the worker successfully finishes a job.
+  log.info(`Completed fact-check job: ${job.id}`);
 });
 
 worker.on('failed', async (job, error) => {
-  if (!job) {
-    throw new Error('no job present');
+  // called when a job fails because the processor throws/rejects.
+  if (job) {
+    log.error(`Failure in fact-check job: ${job.id}`);
   }
-  const jobId = job.id;
-  if (!jobId) {
-    throw new Error('no job id present');
-  }
-  await updateFactCheckJobStatus(jobId, JobStatus.FAILED);
-  log.error({ jobId: job?.id, error }, 'Fact-check job failed');
-});
-
-worker.on('error', (error) => {
-  log.error({ error }, 'Fact-check worker error');
+  log.error(error);
 });
 
 worker.on('stalled', (jobId) => {
-  log.warn({ jobId }, 'Fact-check job stalled');
+  // called when bullmq thinks a job was being processed by a worker, but that worker stopped renewing the job's lock
+  log.warn(`Stalled fact-check job: ${jobId}`);
 });
 
 export { worker };

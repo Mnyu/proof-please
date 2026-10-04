@@ -6,7 +6,7 @@ import { Queue } from 'bullmq';
 const factCheckJobQueue = new Queue<FactCheckJob>(config.factCheckJobQueue.name, {
   connection: redis,
   defaultJobOptions: {
-    attempts: 3,
+    attempts: 1,
 
     backoff: {
       type: 'exponential',

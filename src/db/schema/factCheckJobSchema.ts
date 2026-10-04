@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, text, smallint, jsonb, timestamp, index, char } from 'drizzle-orm/pg-core';
+import { pgEnum, pgTable, text, smallint, jsonb, timestamp, index, char, integer } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { user } from './authSchema';
 import { JobStatus } from '@/constants';
@@ -21,7 +21,7 @@ export const factCheckJob = pgTable(
       .notNull(),
     reelUrl: text('reel_url').notNull(),
     status: factCheckJobStatus('status').notNull().default(JobStatus.QUEUED),
-    progress: smallint('progress').notNull().default(0),
+    processingDurationMs: integer('processing_duration_ms'),
     error: text('error'),
     result: jsonb('result'),
     startedAt: timestamp('started_at', {

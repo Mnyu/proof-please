@@ -77,7 +77,7 @@ CREATE TABLE "fact_check_job" (
 	"user_id" text NOT NULL,
 	"reel_url" text NOT NULL,
 	"status" "fact_check_job_status" DEFAULT 'QUEUED' NOT NULL,
-	"progress" smallint DEFAULT 0 NOT NULL,
+	"processing_duration_ms" integer,
 	"error" text,
 	"result" jsonb,
 	"started_at" timestamp with time zone,

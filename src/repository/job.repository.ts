@@ -1,37 +1,20 @@
-import { JobStatus } from '@/constants';
 import { db } from '@/db/client';
 import { factCheckJob, FactCheckJob, NewFactCheckJob } from '@/db/schema';
-import { VerifierResponse } from '@/types/types';
 import { eq } from 'drizzle-orm';
+
+const getFactCheckJob = async (jobId: string) => {
+  const [job] = await db.select().from(factCheckJob).where(eq(factCheckJob.id, jobId)).limit(1);
+  return job;
+};
 
 const saveFactCheckJob = async (newFactCheckJob: NewFactCheckJob): Promise<FactCheckJob> => {
   const [savedFactCheckJob] = await db.insert(factCheckJob).values(newFactCheckJob).onConflictDoNothing().returning();
   return savedFactCheckJob;
 };
 
-const updateFactCheckJobStatus = async (jobId: string, status: JobStatus) => {
-  const [updatedFactCheckJob] = await db
-    .update(factCheckJob)
-    .set({
-      status,
-      updatedAt: new Date(),
-    })
-    .where(eq(factCheckJob.id, jobId))
-    .returning();
-  return updatedFactCheckJob;
+const updateFactCheckJob = async (jobId: string, data: Partial<NewFactCheckJob>) => {
+  const [updatedJob] = await db.update(factCheckJob).set(data).where(eq(factCheckJob.id, jobId)).returning();
+  return updatedJob;
 };
 
-const updateFactCheckJobResultAndStatus = async (jobId: string, result: VerifierResponse, status: JobStatus) => {
-  const [updatedFactCheckJob] = await db
-    .update(factCheckJob)
-    .set({
-      status,
-      result,
-      updatedAt: new Date(),
-    })
-    .where(eq(factCheckJob.id, jobId))
-    .returning();
-  return updatedFactCheckJob;
-};
-
-export { saveFactCheckJob, updateFactCheckJobStatus, updateFactCheckJobResultAndStatus };
+export { getFactCheckJob, saveFactCheckJob, updateFactCheckJob };
