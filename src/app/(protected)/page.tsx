@@ -4,10 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { ProofPlease, ProofPleaseSchema } from '@/types/ui';
-import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import { ArrowRightIcon, LinkIcon, MoveRight } from 'lucide-react';
+import { LinkIcon, MoveRight } from 'lucide-react';
 import Image from 'next/image';
 
 const Home = () => {

@@ -32,15 +32,15 @@ const Header = ({ user }: HeaderProps) => {
               <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                 <Link href='/'>Home</Link>
               </NavigationMenuLink>
-              <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+              {/* <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                 <Link href='/'>How it works</Link>
-              </NavigationMenuLink>
+              </NavigationMenuLink> */}
               <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                <Link href='/'>My Checks</Link>
+                <Link href='/proofs'>Proofs</Link>
               </NavigationMenuLink>
-              <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+              {/* <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                 <Link href='/'>Pricing</Link>
-              </NavigationMenuLink>
+              </NavigationMenuLink> */}
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
