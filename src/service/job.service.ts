@@ -1,12 +1,12 @@
 import { getExtractorAgent } from '@/agent/extractor/factory';
 import { config } from '@/config';
-import { AppError, RateLimitError } from '@/errors';
+import { AppError, RateLimitError, ValidationError } from '@/errors';
 import { requireSession } from '@/lib/auth-session';
 import { log } from '@/observability/logger';
 import { factCheckJobQueue } from '@/queue';
 import { checkFactCheckJobUserRateLimit } from '@/rateLimit';
-import { getFactCheckJob, saveFactCheckJob } from '@/repository';
-import { FactCheckResponse } from '@/types/api';
+import { findFactCheckJobs, getFactCheckJob, saveFactCheckJob } from '@/repository';
+import { FactCheckResponse, JobsListFilters, JobsListFiltersSchema } from '@/types/api';
 import {
   ClaimedFact,
   ClaimedFactWithVerifiableSources,
@@ -14,12 +14,44 @@ import {
   VerifierResponse,
   VideoDetails,
 } from '@/types/types';
-import { createSHA256Hash } from '@/utils';
+import { createSHA256Hash, getTimeInMinutesSeconds } from '@/utils';
 import { getTrialRun, getVideoDetails } from '@/video';
 import { HumanMessage } from 'langchain';
 import { getVerifiableSources } from './fact.service';
 import { getVerifierAgent } from '@/agent/verifier/factory';
 import { JobStatus } from '@/constants';
+import { flattenError } from 'zod';
+import { buildPagination } from '@/lib/pagination';
+import { FactCheckJob } from '@/db/schema';
+import { PageResponse, ProofDTO } from '@/types/dto';
+
+const getFactCheckJobs = async (filters: JobsListFilters): Promise<PageResponse<ProofDTO>> => {
+  const parsed = JobsListFiltersSchema.safeParse(filters);
+  if (!parsed.success) {
+    throw new ValidationError('Input validation failed', flattenError(parsed.error).fieldErrors);
+  }
+  const { user } = await requireSession();
+  filters = parsed.data;
+  const queryResult = await findFactCheckJobs(user.id, filters);
+  const pagination = buildPagination(filters.page, filters.pageSize, queryResult.total);
+  return {
+    data: buildProofDTOsFromJobs(queryResult.rows),
+    pagination: pagination,
+  };
+};
+
+const buildProofDTOsFromJobs = (jobs: FactCheckJob[]): ProofDTO[] => {
+  return jobs.map((job) => {
+    return {
+      id: job.id,
+      thumbnailUrl: '',
+      title: job.reelUrl,
+      status: job.status,
+      verdict: job.verdict || '',
+      timeTaken: job.processingDurationMs ? getTimeInMinutesSeconds(job.processingDurationMs) : '',
+    };
+  });
+};
 
 const submitFactCheckJob = async (userId: string, reelUrl: string): Promise<FactCheckResponse> => {
   // TODO : get userId from session instead of userId parameter
@@ -136,4 +168,4 @@ const buildVerificationQuery = (claimedFactsWithVerifiableSources: ClaimedFactWi
   return userQuery;
 };
 
-export { submitFactCheckJob, runFactCheckJob };
+export { getFactCheckJobs, submitFactCheckJob, runFactCheckJob };

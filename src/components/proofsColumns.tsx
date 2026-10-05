@@ -36,6 +36,14 @@ export const proofsColumns: ColumnDef<ProofDTO>[] = [
     },
   },
   {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: ({ row }) => <div className='flex items-center'>{row.original.status}</div>,
+    meta: {
+      width: '200px',
+    },
+  },
+  {
     accessorKey: 'verdict',
     header: 'Verdict',
     cell: ({ row }) => (
@@ -45,7 +53,7 @@ export const proofsColumns: ColumnDef<ProofDTO>[] = [
       </div>
     ),
     meta: {
-      width: '200px',
+      width: '30%',
     },
   },
   {

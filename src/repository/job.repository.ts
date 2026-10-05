@@ -1,6 +1,34 @@
 import { db } from '@/db/client';
 import { factCheckJob, FactCheckJob, NewFactCheckJob } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { JobsListFilters } from '@/types/api';
+import { and, desc, eq, sql } from 'drizzle-orm';
+
+const findFactCheckJobs = async (userId: string, filters: JobsListFilters) => {
+  const conditions = [eq(factCheckJob.userId, userId)];
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+  const offset = (filters.page - 1) * filters.pageSize;
+  const [rows, countResult] = await Promise.all([
+    db
+      .select()
+      .from(factCheckJob)
+      .where(whereClause)
+      .orderBy(desc(factCheckJob.createdAt))
+      .limit(filters.pageSize)
+      .offset(offset),
+
+    db
+      .select({
+        total: sql<number>`count(*)`,
+      })
+      .from(factCheckJob)
+      .where(whereClause),
+  ]);
+
+  return {
+    rows,
+    total: Number(countResult[0]?.total ?? 0),
+  };
+};
 
 const getFactCheckJob = async (jobId: string) => {
   const [job] = await db.select().from(factCheckJob).where(eq(factCheckJob.id, jobId)).limit(1);
@@ -17,4 +45,4 @@ const updateFactCheckJob = async (jobId: string, data: Partial<NewFactCheckJob>)
   return updatedJob;
 };
 
-export { getFactCheckJob, saveFactCheckJob, updateFactCheckJob };
+export { findFactCheckJobs, getFactCheckJob, saveFactCheckJob, updateFactCheckJob };

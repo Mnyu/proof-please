@@ -27,3 +27,11 @@ export const FactCheckResponseSchema = z.object({
   requestsRemaining: z.number(),
 });
 export type FactCheckResponse = z.infer<typeof FactCheckResponseSchema>;
+
+export const JobsListFiltersSchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(1000).default(10),
+  sort: z.enum(['createdAt', 'symbol', 'entryDate', 'exitDate']).default('createdAt'),
+  direction: z.enum(['asc', 'desc']).default('desc'),
+});
+export type JobsListFilters = z.infer<typeof JobsListFiltersSchema>;

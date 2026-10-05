@@ -1,21 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { DataTable } from './table/data-table';
-import { ProofDTO } from '@/types/dto';
+import { PageResponse, ProofDTO } from '@/types/dto';
 import { proofsColumns } from './proofsColumns';
 
 interface ClaimedFactsTableProps {
-  pagination?: boolean;
+  data: PageResponse<ProofDTO>;
 }
 
-const proofs: ProofDTO[] = [
-  { thumbnailUrl: '', title: 'TEST TITLE', verdict: 'TRUE', timeTaken: '120' },
-  { thumbnailUrl: '', title: 'TEST TITLE', verdict: 'TRUE', timeTaken: '120' },
-  { thumbnailUrl: '', title: 'TEST TITLE', verdict: 'TRUE', timeTaken: '120' },
-  { thumbnailUrl: '', title: 'TEST TITLE', verdict: 'TRUE', timeTaken: '120' },
-  { thumbnailUrl: '', title: 'TEST TITLE', verdict: 'TRUE', timeTaken: '120' },
-];
-
-const ProofsTable = ({ pagination = true }: ClaimedFactsTableProps) => {
+const ProofsTable = ({ data }: ClaimedFactsTableProps) => {
   return (
     <section>
       <Card className='w-full h-full mx-auto'>
@@ -26,12 +18,12 @@ const ProofsTable = ({ pagination = true }: ClaimedFactsTableProps) => {
         <CardContent>
           <DataTable
             columns={proofsColumns}
-            data={proofs}
-            pagination={pagination}
-            page={1}
-            pageSize={5}
-            totalPages={3}
-            totalRecords={12}
+            data={data.data}
+            pagination={true}
+            page={data.pagination.page}
+            pageSize={data.pagination.pageSize}
+            totalPages={data.pagination.totalPages}
+            totalRecords={data.pagination.totalRecords}
           />
         </CardContent>
       </Card>
