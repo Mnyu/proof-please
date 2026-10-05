@@ -14,6 +14,7 @@ import VerdictPartiallyTrueIcon from './verdictPartiallyTrueIcon';
 import VerdictOutdatedIcon from './verdictOutdatedIcon';
 import VerdictUnverifiableIcon from './verdictUnverifiableIcon';
 import VerdictSatireIcon from './verdictSatireIcon';
+import { Spinner } from './ui/spinner';
 
 export const VERDICT_SMALL_ICON_MAP: Record<Verdict, ReactNode> = {
   [Verdict.TRUE]: <VerdictTrueIcon className='size-6' />,
@@ -57,7 +58,19 @@ export const proofsColumns: ColumnDef<ProofDTO>[] = [
   {
     accessorKey: 'status',
     header: 'Status',
-    cell: ({ row }) => <div className='flex items-center'>{row.original.status}</div>,
+    cell: ({ row }) => (
+      <>
+        {row.original.status === JobStatus.IN_PROGRESS && (
+          <div className='flex items-center gap-1 text-primary'>
+            <Spinner />
+            {row.original.status}
+          </div>
+        )}
+        {row.original.status !== JobStatus.IN_PROGRESS && (
+          <div className='flex items-center gap-1'>{row.original.status}</div>
+        )}
+      </>
+    ),
     meta: {
       width: '200px',
     },
