@@ -1,7 +1,7 @@
 factCheckJobQueue:
   name: fact-check
   requestsWindowInSeconds: 3600 # 1 hour
-  maxRequestsPerUser: 5
+  maxRequestsPerUser: 10
   jobName: fact-check-job
   concurrency: 1
   retryAttempts: 1
@@ -9,7 +9,7 @@ factCheckJobQueue:
   backOffDelayMilliseconds: 5000
 
 video:
-  maxDuration: 60 # seconds
+  maxDuration: 120 # seconds
 
 extractor:
   baseurl: http://127.0.0.1:1234/v1
