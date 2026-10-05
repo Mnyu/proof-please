@@ -5,10 +5,10 @@ import { redirect } from 'next/navigation';
 import { Button } from './ui/button';
 
 interface LogoutProps {
-  showText: boolean;
+  showText?: boolean;
 }
 
-const Logout = ({ showText }: LogoutProps) => {
+const Logout = ({ showText = false }: LogoutProps) => {
   const handleLogout = async () => {
     await authClient.signOut({
       fetchOptions: {
@@ -19,8 +19,8 @@ const Logout = ({ showText }: LogoutProps) => {
     });
   };
   return (
-    <Button variant='outline' onClick={handleLogout} className='flex items-center justify-start cursor-pointer p-4'>
-      {/* <LogOut /> */}
+    <Button variant='ghost' onClick={handleLogout} className='flex items-center justify-start cursor-pointer p-2 pr-3'>
+      <LogOut />
       {showText && `Logout`}
     </Button>
   );
