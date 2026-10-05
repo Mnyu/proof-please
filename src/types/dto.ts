@@ -7,6 +7,7 @@ export type ClaimedFactDTO = {
 };
 
 export type ProofDTO = {
+  id: string;
   thumbnailUrl: string;
   title: string;
   verdict: string;

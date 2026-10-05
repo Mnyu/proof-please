@@ -2,9 +2,10 @@
 
 import { ProofDTO } from '@/types/dto';
 import { ColumnDef } from '@tanstack/react-table';
-import { Button } from './ui/button';
 import VerdictTrueIcon from './verdictTrueIcon';
 import Image from 'next/image';
+import Link from 'next/link';
+import { Eye } from 'lucide-react';
 
 export const proofsColumns: ColumnDef<ProofDTO>[] = [
   {
@@ -29,7 +30,7 @@ export const proofsColumns: ColumnDef<ProofDTO>[] = [
   {
     accessorKey: 'title',
     header: 'Title',
-    cell: ({ row }) => <div className=''>{row.original.title}</div>,
+    cell: ({ row }) => <div className='flex items-center'>{row.original.title}</div>,
     meta: {
       width: '60%',
     },
@@ -50,9 +51,26 @@ export const proofsColumns: ColumnDef<ProofDTO>[] = [
   {
     accessorKey: 'timeTaken',
     header: 'Time taken',
-    cell: ({ row }) => <div className=''>{row.original.timeTaken}</div>,
+    cell: ({ row }) => <div className='flex items-center'>{row.original.timeTaken}</div>,
     meta: {
       width: '200px',
+    },
+  },
+  {
+    accessorKey: 'id',
+    header: '',
+    cell: ({ row }) => {
+      const proof = row.original;
+      return (
+        <div className='flex items-center'>
+          <Link href={`/proofs/${proof.id}`}>
+            <Eye size={16} />
+          </Link>
+        </div>
+      );
+    },
+    meta: {
+      width: '70px',
     },
   },
 ];
