@@ -182,7 +182,7 @@ const buildFactCheckJobDTO = (job: FactCheckJob): FactCheckJobDTO => {
     reelUrl: job.reelUrl,
     title: job.reelUrl,
     status: job.status,
-    verdict: job.verdict || '',
+    verdict: job.verdict as Verdict,
     timeTaken: job.processingDurationMs ? getTimeInMinutesSeconds(job.processingDurationMs) : '',
     verifierResponse: job.result ? (job.result as VerifierResponse) : getBlankVerifierResponse(),
     createdAt: job.createdAt.toISOString().split('T')[0],
