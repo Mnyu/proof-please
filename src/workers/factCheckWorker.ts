@@ -18,14 +18,15 @@ const processor = async (job: Job) => {
   log.info(`Started processing fact-chek job: ${jobId}`);
   try {
     await updateFactCheckJob(jobId, { status: JobStatus.IN_PROGRESS });
-    const response = await runFactCheckJob(reelUrl);
+    const { verifierResponse, videoDetails } = await runFactCheckJob(reelUrl);
     log.info(`Response for fact-chek job: ${jobId}`);
-    log.info(JSON.stringify(response, null, 2));
+    log.info(JSON.stringify(verifierResponse, null, 2));
 
     await updateFactCheckJob(jobId, {
+      reelCaption: videoDetails.caption,
       status: JobStatus.COMPLETED,
-      verdict: response.verdict,
-      result: response,
+      verdict: verifierResponse.verdict,
+      result: verifierResponse,
       processingDurationMs: getDurationInMs(startTime),
     });
     log.info(`Completed processing fact-chek job: ${jobId}`);
@@ -35,6 +36,7 @@ const processor = async (job: Job) => {
       errorMsg = error.message;
     }
     await updateFactCheckJob(jobId, {
+      reelCaption: reelUrl,
       status: JobStatus.FAILED,
       processingDurationMs: getDurationInMs(startTime),
       error: errorMsg,

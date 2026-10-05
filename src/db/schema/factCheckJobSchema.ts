@@ -31,6 +31,7 @@ export const factCheckJob = pgTable(
       })
       .notNull(),
     reelUrl: text('reel_url').notNull(),
+    reelCaption: text('reel_caption'),
     status: factCheckJobStatus('status').notNull().default(JobStatus.QUEUED),
     verdict: factCheckJobVerdict('verdict').default(Verdict.NONE),
     processingDurationMs: integer('processing_duration_ms'),

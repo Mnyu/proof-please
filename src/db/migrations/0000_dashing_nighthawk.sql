@@ -77,6 +77,7 @@ CREATE TABLE "fact_check_job" (
 	"id" char(64) PRIMARY KEY NOT NULL,
 	"user_id" text NOT NULL,
 	"reel_url" text NOT NULL,
+	"reel_caption" text,
 	"status" "fact_check_job_status" DEFAULT 'QUEUED' NOT NULL,
 	"verdict" "fact_check_job_verdict" DEFAULT 'NONE',
 	"processing_duration_ms" integer,

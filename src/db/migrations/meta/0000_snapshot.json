@@ -1,5 +1,5 @@
 {
-  "id": "954414ae-1ebf-4bf9-b471-fde0d3c18094",
+  "id": "8c2fbb5e-ffbb-4827-93dd-778340757500",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -571,6 +571,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "reel_caption": {
+          "name": "reel_caption",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "status": {
           "name": "status",

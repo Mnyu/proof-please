@@ -18,4 +18,13 @@ const getTimeInMinutesSeconds = (timeInMs: number) => {
   return timeString;
 };
 
-export { createSHA256Hash, getDurationInMs, getTimeInMinutesSeconds };
+const cleanString = (value: string): string => {
+  return value
+    .replace(/\\n/g, ' ')
+    .replace(/\r?\n/g, ' ')
+    .replace(/#[\p{L}\p{N}_]+/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+};
+
+export { createSHA256Hash, getDurationInMs, getTimeInMinutesSeconds, cleanString };

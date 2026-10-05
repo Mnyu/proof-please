@@ -15,7 +15,7 @@ import {
   VerifierResult,
   VideoDetails,
 } from '@/types/types';
-import { createSHA256Hash, getTimeInMinutesSeconds } from '@/utils';
+import { cleanString, createSHA256Hash, getTimeInMinutesSeconds } from '@/utils';
 import { getTrialRun, getVideoDetails } from '@/video';
 import { HumanMessage } from 'langchain';
 import { getVerifiableSources } from './fact.service';
@@ -81,7 +81,7 @@ const submitFactCheckJob = async (request: FactCheckRequest): Promise<FactCheckR
 
 const runFactCheckJob = async (reelUrl: string) => {
   log.info(`running fact check job for : ${reelUrl}`);
-  // const videoDetails = await getVideoDetails(reelUrl);
+  //const videoDetails = await getVideoDetails(reelUrl);
   const videoDetails = getTrialRun();
   const claimedFacts = await extractClaimedFacts(videoDetails);
   const claimedFactsWithVerifiableSourcesPromises = await Promise.allSettled(
@@ -90,8 +90,8 @@ const runFactCheckJob = async (reelUrl: string) => {
   const claimedFactsWithVerifiableSources = claimedFactsWithVerifiableSourcesPromises
     .filter((promise) => promise.status === 'fulfilled')
     .map((promise) => promise.value);
-  const response = verifiyClaimedFacts(claimedFactsWithVerifiableSources);
-  return response;
+  const verifierResponse = await verifiyClaimedFacts(claimedFactsWithVerifiableSources);
+  return { verifierResponse, videoDetails };
 };
 
 const extractClaimedFacts = async (videoDetails: VideoDetails) => {
@@ -168,7 +168,8 @@ const buildProofDTOsFromJobs = (jobs: FactCheckJob[]): ProofDTO[] => {
     return {
       id: job.id,
       thumbnailUrl: '',
-      title: job.reelUrl,
+      title: job.reelCaption ? cleanString(job.reelCaption) : job.reelUrl,
+      url: job.reelUrl,
       status: job.status,
       verdict: job.verdict || '',
       timeTaken: job.processingDurationMs ? getTimeInMinutesSeconds(job.processingDurationMs) : '',
@@ -181,7 +182,7 @@ const buildFactCheckJobDTO = (job: FactCheckJob): FactCheckJobDTO => {
     id: job.id,
     thumbnailUrl: '',
     reelUrl: job.reelUrl,
-    title: job.reelUrl,
+    title: job.reelCaption ? cleanString(job.reelCaption) : job.reelUrl,
     status: job.status,
     verdict: job.verdict as Verdict,
     timeTaken: job.processingDurationMs ? getTimeInMinutesSeconds(job.processingDurationMs) : '',
@@ -196,7 +197,7 @@ const getBlankVerifierResponse = () => {
     verdict: Verdict.UNVERIFIABLE,
     confidence: 0,
     rationale: ['verification not done'],
-    factResults: {} as Record<string, VerifierResult>,
+    factResults: [],
   };
 };
 

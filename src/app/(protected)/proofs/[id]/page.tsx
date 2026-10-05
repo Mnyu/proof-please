@@ -115,9 +115,9 @@ const Proof = async ({ params }: ProofProps) => {
               className='size-full rounded-md object-contain'
             />
           </ItemMedia>
-          <ItemContent>
+          <ItemContent className='gap-2'>
             <ItemTitle className='text-xl leading-none font-semibold'>{proof.title}</ItemTitle>
-            <ItemDescription>A simple item with title and description.</ItemDescription>
+            <ItemDescription className='text-blue-500'>{proof.reelUrl}</ItemDescription>
           </ItemContent>
           <ItemActions>
             <Link href={'/'}>
