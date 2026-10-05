@@ -1,3 +1,5 @@
+import { VerifierResponse } from './types';
+
 export type Pagination = {
   page: number;
   pageSize: number;
@@ -27,4 +29,17 @@ export type ProofDTO = {
   status: string;
   verdict: string;
   timeTaken: string;
+};
+
+export type FactCheckJobDTO = {
+  id: string;
+  thumbnailUrl: string;
+  reelUrl: string;
+  title: string;
+  status: string;
+  verdict: string;
+  timeTaken: string;
+  verifierResponse: VerifierResponse;
+  createdAt: string;
+  updatedAt: string;
 };

@@ -30,7 +30,7 @@ const findFactCheckJobs = async (userId: string, filters: JobsListFilters) => {
   };
 };
 
-const getFactCheckJob = async (jobId: string) => {
+const findFactCheckJob = async (jobId: string) => {
   const [job] = await db.select().from(factCheckJob).where(eq(factCheckJob.id, jobId)).limit(1);
   return job;
 };
@@ -107,4 +107,4 @@ const findUserStats = async (userId: string) => {
   return stats;
 };
 
-export { findFactCheckJobs, getFactCheckJob, saveFactCheckJob, updateFactCheckJob, findUserStats };
+export { findFactCheckJobs, findFactCheckJob, saveFactCheckJob, updateFactCheckJob, findUserStats };

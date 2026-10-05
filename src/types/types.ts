@@ -137,6 +137,7 @@ export const VerifierResultSchema = z.object({
     )
     .max(3),
 });
+export type VerifierResult = z.infer<typeof VerifierResultSchema>;
 
 export const VerifierResponseSchema = z.object({
   verdict: z.enum([
@@ -146,6 +147,8 @@ export const VerifierResponseSchema = z.object({
     Verdict.MISLEADING,
     Verdict.UNVERIFIABLE,
     Verdict.OUTDATED,
+    Verdict.SATIRE,
+    Verdict.NONE,
   ]),
   confidence: z.number().min(0).max(1),
   rationale: z.array(z.string()).describe('array of all the rationale points that lead to the verdict'),

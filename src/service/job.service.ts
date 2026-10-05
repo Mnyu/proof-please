@@ -5,13 +5,14 @@ import { requireSession } from '@/lib/auth-session';
 import { log } from '@/observability/logger';
 import { factCheckJobQueue } from '@/queue';
 import { checkFactCheckJobUserRateLimit } from '@/rateLimit';
-import { findFactCheckJobs, getFactCheckJob, saveFactCheckJob } from '@/repository';
+import { findFactCheckJob, findFactCheckJobs, saveFactCheckJob } from '@/repository';
 import { FactCheckResponse, JobsListFilters, JobsListFiltersSchema } from '@/types/api';
 import {
   ClaimedFact,
   ClaimedFactWithVerifiableSources,
   ExtractorResponse,
   VerifierResponse,
+  VerifierResult,
   VideoDetails,
 } from '@/types/types';
 import { createSHA256Hash, getTimeInMinutesSeconds } from '@/utils';
@@ -19,11 +20,11 @@ import { getTrialRun, getVideoDetails } from '@/video';
 import { HumanMessage } from 'langchain';
 import { getVerifiableSources } from './fact.service';
 import { getVerifierAgent } from '@/agent/verifier/factory';
-import { JobStatus } from '@/constants';
+import { JobStatus, Verdict } from '@/constants';
 import { flattenError } from 'zod';
 import { buildPagination } from '@/lib/pagination';
 import { FactCheckJob } from '@/db/schema';
-import { PageResponse, ProofDTO } from '@/types/dto';
+import { FactCheckJobDTO, PageResponse, ProofDTO } from '@/types/dto';
 
 const getFactCheckJobs = async (filters: JobsListFilters): Promise<PageResponse<ProofDTO>> => {
   const parsed = JobsListFiltersSchema.safeParse(filters);
@@ -40,17 +41,10 @@ const getFactCheckJobs = async (filters: JobsListFilters): Promise<PageResponse<
   };
 };
 
-const buildProofDTOsFromJobs = (jobs: FactCheckJob[]): ProofDTO[] => {
-  return jobs.map((job) => {
-    return {
-      id: job.id,
-      thumbnailUrl: '',
-      title: job.reelUrl,
-      status: job.status,
-      verdict: job.verdict || '',
-      timeTaken: job.processingDurationMs ? getTimeInMinutesSeconds(job.processingDurationMs) : '',
-    };
-  });
+const getFactCheckJob = async (jobId: string) => {
+  const { user } = await requireSession();
+  const job = await findFactCheckJob(jobId);
+  return buildFactCheckJobDTO(job);
 };
 
 const submitFactCheckJob = async (userId: string, reelUrl: string): Promise<FactCheckResponse> => {
@@ -61,7 +55,7 @@ const submitFactCheckJob = async (userId: string, reelUrl: string): Promise<Fact
     throw new RateLimitError(`rate limited exceeded, retry after ${rateLimit.retryAfter} seconds`);
   }
   const jobId = createSHA256Hash(`${userId}:${reelUrl}`);
-  let factCheckJob = await getFactCheckJob(jobId);
+  let factCheckJob = await findFactCheckJob(jobId);
   if (factCheckJob && factCheckJob.status === JobStatus.COMPLETED) {
     return {
       jobId: factCheckJob.id,
@@ -168,4 +162,41 @@ const buildVerificationQuery = (claimedFactsWithVerifiableSources: ClaimedFactWi
   return userQuery;
 };
 
-export { getFactCheckJobs, submitFactCheckJob, runFactCheckJob };
+const buildProofDTOsFromJobs = (jobs: FactCheckJob[]): ProofDTO[] => {
+  return jobs.map((job) => {
+    return {
+      id: job.id,
+      thumbnailUrl: '',
+      title: job.reelUrl,
+      status: job.status,
+      verdict: job.verdict || '',
+      timeTaken: job.processingDurationMs ? getTimeInMinutesSeconds(job.processingDurationMs) : '',
+    };
+  });
+};
+
+const buildFactCheckJobDTO = (job: FactCheckJob): FactCheckJobDTO => {
+  return {
+    id: job.id,
+    thumbnailUrl: '',
+    reelUrl: job.reelUrl,
+    title: job.reelUrl,
+    status: job.status,
+    verdict: job.verdict || '',
+    timeTaken: job.processingDurationMs ? getTimeInMinutesSeconds(job.processingDurationMs) : '',
+    verifierResponse: job.result ? (job.result as VerifierResponse) : getBlankVerifierResponse(),
+    createdAt: job.createdAt.toISOString().split('T')[0],
+    updatedAt: job.updatedAt.toISOString().split('T')[0],
+  };
+};
+
+const getBlankVerifierResponse = () => {
+  return {
+    verdict: Verdict.UNVERIFIABLE,
+    confidence: 0,
+    rationale: ['verification not done'],
+    factResults: {} as Record<string, VerifierResult>,
+  };
+};
+
+export { getFactCheckJobs, getFactCheckJob, submitFactCheckJob, runFactCheckJob };

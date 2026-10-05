@@ -25,7 +25,7 @@ export const claimedFactColumns: ColumnDef<ClaimedFactDTO>[] = [
       </div>
     ),
     meta: {
-      width: '100px',
+      width: '200px',
     },
   },
   {
