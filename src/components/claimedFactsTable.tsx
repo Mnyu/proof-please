@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { DataTable } from './table/data-table';
-import { claimedFactColumns } from './claimedFactsColums';
+import { claimedFactColumns } from './claimedFactsColumns';
 import { ClaimedFactDTO } from '@/types/dto';
 
 interface ClaimedFactsTableProps {
