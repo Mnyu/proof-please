@@ -1,3 +1,4 @@
+import { Verdict } from '@/constants';
 import { VerifierResponse } from './types';
 
 export type Pagination = {
@@ -37,7 +38,7 @@ export type FactCheckJobDTO = {
   reelUrl: string;
   title: string;
   status: string;
-  verdict: string;
+  verdict: Verdict;
   timeTaken: string;
   verifierResponse: VerifierResponse;
   createdAt: string;

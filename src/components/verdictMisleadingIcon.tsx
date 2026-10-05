@@ -1,9 +1,14 @@
+import { cn } from 'cn';
 import { Eye } from 'lucide-react';
 
-const VerdictMisleadingIcon = () => {
+interface VerdictMisleadingIconProps {
+  className?: string;
+}
+
+const VerdictMisleadingIcon = ({ className }: VerdictMisleadingIconProps) => {
   return (
-    <div className='flex items-center justify-center h-20 w-20 shrink-0 rounded-full bg-orange-500/80'>
-      <Eye className='h-10 w-10 text-white' strokeWidth={2.5} />
+    <div className={cn('flex size-10 shrink-0 items-center justify-center rounded-full bg-orange-500/80', className)}>
+      <Eye className='size-1/2 text-white' strokeWidth={3} />
     </div>
   );
 };

@@ -1,9 +1,14 @@
+import { cn } from 'cn';
 import { X } from 'lucide-react';
 
-const VerdictFalseIcon = () => {
+interface VerdictFalseIconProps {
+  className?: string;
+}
+
+const VerdictFalseIcon = ({ className }: VerdictFalseIconProps) => {
   return (
-    <div className='flex items-center justify-center h-20 w-20 shrink-0 rounded-full bg-red-500/80'>
-      <X className='h-10 w-10 text-white' strokeWidth={3} />
+    <div className={cn('flex size-10 shrink-0 items-center justify-center rounded-full bg-red-500/80', className)}>
+      <X className='size-1/2 text-white' strokeWidth={3} />
     </div>
   );
 };
