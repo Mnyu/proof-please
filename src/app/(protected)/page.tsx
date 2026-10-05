@@ -8,8 +8,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
 import { LinkIcon, MoveRight } from 'lucide-react';
 import Image from 'next/image';
+import { submitProofPleaseJob } from '@/actions/job.actions';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const Home = () => {
+  const router = useRouter();
   const form = useForm<ProofPlease>({
     resolver: zodResolver(ProofPleaseSchema),
     mode: 'onBlur',
@@ -20,11 +24,25 @@ const Home = () => {
 
   const runProofPlease = async (formInput: ProofPlease) => {
     console.log(formInput);
+    const response = await submitProofPleaseJob(formInput);
+    console.log(response);
+    if (response.success) {
+      toast.success('Job submitted successfully', {
+        duration: 1000,
+        onAutoClose: () => {
+          router.push('/proofs');
+        },
+      });
+    } else {
+      toast.error(response.error.message, {
+        duration: 1000,
+      });
+    }
   };
 
   return (
     <div className='h-full flex flex-col items-center justify-start'>
-      <Card className='w-full max-w-3xl ring-0 bg-transparent pt-5'>
+      <Card className='w-full max-w-3xl ring-0 bg-transparent pt-5 pb-0'>
         <CardHeader className=''>
           <CardTitle className='text-3xl xl:text-4xl py-2 font-serif'>From viral videos to verifiable facts.</CardTitle>
           <CardDescription className='text-md xl:text-lg font-sans'>
@@ -62,8 +80,16 @@ const Home = () => {
           </form>
         </CardContent>
       </Card>
-      <div className='relative w-full min-h-fit hidden md:block flex-1 -mt-16'>
-        <Image src='/images/home.png' alt='home-image' fill priority className='object-contain' sizes='100%' />
+      <div className='relative w-full min-h-fit hidden md:block flex-1'>
+        <Image
+          src='/images/home.png'
+          alt='home-image'
+          fill
+          priority
+          className='object-contain'
+          sizes='100%'
+          placeholder='empty'
+        />
       </div>
     </div>
   );

@@ -3,6 +3,8 @@ import { ThemeProvider } from '@/components/themeProvider';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import AppToaster from '@/components/app-toaster';
+import { TooltipProvider } from '@/components/ui/tooltip';
 // import AppToaster from '@/components/app-toaster';
 
 const geistSans = Geist({
@@ -33,10 +35,9 @@ export default function RootLayout({
     >
       <body className='h-full flex flex-col overflow-hidden'>
         <ThemeProvider attribute='class' defaultTheme='light' enableSystem disableTransitionOnChange>
-          {/* <TooltipProvider>{children}</TooltipProvider> */}
-          {children}
+          <TooltipProvider>{children}</TooltipProvider>
         </ThemeProvider>
-        {/* <AppToaster /> */}
+        <AppToaster />
       </body>
     </html>
   );

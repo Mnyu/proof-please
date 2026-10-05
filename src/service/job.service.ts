@@ -5,8 +5,8 @@ import { requireSession } from '@/lib/auth-session';
 import { log } from '@/observability/logger';
 import { factCheckJobQueue } from '@/queue';
 import { checkFactCheckJobUserRateLimit } from '@/rateLimit';
-import { findFactCheckJob, findFactCheckJobs, saveFactCheckJob } from '@/repository';
-import { FactCheckResponse, JobsListFilters, JobsListFiltersSchema } from '@/types/api';
+import { findFactCheckJob, findFactCheckJobs, saveFactCheckJob, updateFactCheckJob } from '@/repository';
+import { FactCheckRequest, FactCheckResponse, JobsListFilters, JobsListFiltersSchema } from '@/types/api';
 import {
   ClaimedFact,
   ClaimedFactWithVerifiableSources,
@@ -47,9 +47,10 @@ const getFactCheckJob = async (jobId: string) => {
   return buildFactCheckJobDTO(job);
 };
 
-const submitFactCheckJob = async (userId: string, reelUrl: string): Promise<FactCheckResponse> => {
-  // TODO : get userId from session instead of userId parameter
-  // const { user } = await requireSession();
+const submitFactCheckJob = async (request: FactCheckRequest): Promise<FactCheckResponse> => {
+  const { user } = await requireSession();
+  const userId = user.id;
+  const reelUrl = request.reelUrl;
   const rateLimit = await checkFactCheckJobUserRateLimit(userId);
   if (!rateLimit.allowed) {
     throw new RateLimitError(`rate limited exceeded, retry after ${rateLimit.retryAfter} seconds`);

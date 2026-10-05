@@ -16,7 +16,7 @@ export const apiError = (error: AppError): NextResponse => {
 };
 
 export const FactCheckRequestSchema = z.object({
-  userId: z.string().nonempty(),
+  // userId: z.string().nonempty(),
   reelUrl: z.string().nonempty(),
 });
 export type FactCheckRequest = z.infer<typeof FactCheckRequestSchema>;
