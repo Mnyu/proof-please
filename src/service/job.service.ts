@@ -81,8 +81,8 @@ const submitFactCheckJob = async (request: FactCheckRequest): Promise<FactCheckR
 
 const runFactCheckJob = async (reelUrl: string) => {
   log.info(`running fact check job for : ${reelUrl}`);
-  //const videoDetails = await getVideoDetails(reelUrl);
-  const videoDetails = getTrialRun();
+  const videoDetails = await getVideoDetails(reelUrl);
+  // const videoDetails = getTrialRun();
   const claimedFacts = await extractClaimedFacts(videoDetails);
   const claimedFactsWithVerifiableSourcesPromises = await Promise.allSettled(
     claimedFacts.map((claimedFact) => getClaimedFactsWithVerifiableSources(claimedFact)),
