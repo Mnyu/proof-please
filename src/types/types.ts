@@ -125,7 +125,7 @@ export const VerifierResultSchema = z.object({
     .array(
       z.object({
         argument: z.string(),
-        citation: z.string(),
+        url: z.string(),
       }),
     )
     .max(3),
@@ -133,7 +133,7 @@ export const VerifierResultSchema = z.object({
     .array(
       z.object({
         argument: z.string(),
-        citation: z.string(),
+        url: z.string(),
       }),
     )
     .max(3),

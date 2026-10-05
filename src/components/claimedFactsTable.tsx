@@ -17,7 +17,7 @@ const transformToClaimedFactDTOs = (proof: FactCheckJobDTO) => {
       verdict: factResult.verdict,
       confidence: factResult.confidence,
       rationale: factResult.rationale,
-      citations: factResult.support.map((s) => s.citation),
+      citations: factResult.support.map((s) => s.url),
     });
   });
   return claimedFactDTOs;
