@@ -1,13 +1,24 @@
 import { pgEnum, pgTable, text, smallint, jsonb, timestamp, index, char, integer } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { user } from './authSchema';
-import { JobStatus } from '@/constants';
+import { JobStatus, Verdict } from '@/constants';
 
 export const factCheckJobStatus = pgEnum('fact_check_job_status', [
   JobStatus.QUEUED,
   JobStatus.IN_PROGRESS,
   JobStatus.COMPLETED,
   JobStatus.FAILED,
+]);
+
+export const factCheckJobVerdict = pgEnum('fact_check_job_verdict', [
+  Verdict.TRUE,
+  Verdict.FALSE,
+  Verdict.PARTIALLY_TRUE,
+  Verdict.MISLEADING,
+  Verdict.UNVERIFIABLE,
+  Verdict.OUTDATED,
+  Verdict.SATIRE,
+  Verdict.NONE,
 ]);
 
 export const factCheckJob = pgTable(
@@ -21,6 +32,7 @@ export const factCheckJob = pgTable(
       .notNull(),
     reelUrl: text('reel_url').notNull(),
     status: factCheckJobStatus('status').notNull().default(JobStatus.QUEUED),
+    verdict: factCheckJobVerdict('verdict').default(Verdict.NONE),
     processingDurationMs: integer('processing_duration_ms'),
     error: text('error'),
     result: jsonb('result'),

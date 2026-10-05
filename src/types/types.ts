@@ -1,18 +1,13 @@
 import {
   CONTRADICTS,
-  FALSE,
   GOOGLE_FACT_CHECK,
-  MISLEADING,
   NEWS_API,
   NEWS_DATA_IO,
-  OUTDATED,
-  PARTIALLY_TRUE,
   PIB,
   SAYS_NOTHING,
   SNOPES,
   SUPPORTS,
-  TRUE,
-  UNVERIFIABLE,
+  Verdict,
   WEB_SEARCH,
 } from '@/constants';
 import { z } from 'zod';
@@ -115,7 +110,14 @@ export const ClaimedFactWithVerifiableSourcesSchema = z.object({
 export type ClaimedFactWithVerifiableSources = z.infer<typeof ClaimedFactWithVerifiableSourcesSchema>;
 
 export const VerifierResultSchema = z.object({
-  verdict: z.enum([TRUE, FALSE, PARTIALLY_TRUE, MISLEADING, UNVERIFIABLE, OUTDATED]),
+  verdict: z.enum([
+    Verdict.TRUE,
+    Verdict.FALSE,
+    Verdict.PARTIALLY_TRUE,
+    Verdict.MISLEADING,
+    Verdict.UNVERIFIABLE,
+    Verdict.OUTDATED,
+  ]),
   confidence: z.number().min(0).max(1),
   rationale: z.string(),
   support: z
@@ -137,7 +139,14 @@ export const VerifierResultSchema = z.object({
 });
 
 export const VerifierResponseSchema = z.object({
-  verdict: z.enum([TRUE, FALSE, PARTIALLY_TRUE, MISLEADING, UNVERIFIABLE, OUTDATED]),
+  verdict: z.enum([
+    Verdict.TRUE,
+    Verdict.FALSE,
+    Verdict.PARTIALLY_TRUE,
+    Verdict.MISLEADING,
+    Verdict.UNVERIFIABLE,
+    Verdict.OUTDATED,
+  ]),
   confidence: z.number().min(0).max(1),
   rationale: z.array(z.string()).describe('array of all the rationale points that lead to the verdict'),
   // directMessageForInstagram: z

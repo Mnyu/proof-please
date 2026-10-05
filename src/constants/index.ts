@@ -19,12 +19,22 @@ export const CONTRADICTS = 'contradicts';
 export const SAYS_NOTHING = 'says_nothing';
 
 // verdict
-export const TRUE = 'TRUE';
-export const FALSE = 'FALSE';
-export const PARTIALLY_TRUE = 'PARTIALLY_TRUE';
-export const MISLEADING = 'MISLEADING';
-export const UNVERIFIABLE = 'UNVERIFIABLE';
-export const OUTDATED = 'OUTDATED';
+export enum Verdict {
+  TRUE = 'TRUE',
+  FALSE = 'FALSE',
+  PARTIALLY_TRUE = 'PARTIALLY_TRUE',
+  MISLEADING = 'MISLEADING',
+  UNVERIFIABLE = 'UNVERIFIABLE',
+  OUTDATED = 'OUTDATED',
+  SATIRE = 'SATIRE',
+  NONE = 'NONE',
+}
+// export const TRUE = 'TRUE';
+// export const FALSE = 'FALSE';
+// export const PARTIALLY_TRUE = 'PARTIALLY_TRUE';
+// export const MISLEADING = 'MISLEADING';
+// export const UNVERIFIABLE = 'UNVERIFIABLE';
+// export const OUTDATED = 'OUTDATED';
 
 // app
 export enum JobStatus {

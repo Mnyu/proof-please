@@ -1,4 +1,5 @@
 CREATE TYPE "public"."fact_check_job_status" AS ENUM('QUEUED', 'IN_PROGRESS', 'COMPLETED', 'FAILED');--> statement-breakpoint
+CREATE TYPE "public"."fact_check_job_verdict" AS ENUM('TRUE', 'FALSE', 'PARTIALLY_TRUE', 'MISLEADING', 'UNVERIFIABLE', 'OUTDATED', 'SATIRE', 'NONE');--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,
@@ -77,6 +78,7 @@ CREATE TABLE "fact_check_job" (
 	"user_id" text NOT NULL,
 	"reel_url" text NOT NULL,
 	"status" "fact_check_job_status" DEFAULT 'QUEUED' NOT NULL,
+	"verdict" "fact_check_job_verdict" DEFAULT 'NONE',
 	"processing_duration_ms" integer,
 	"error" text,
 	"result" jsonb,

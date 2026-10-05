@@ -24,14 +24,20 @@ const processor = async (job: Job) => {
 
     await updateFactCheckJob(jobId, {
       status: JobStatus.COMPLETED,
+      verdict: response.verdict,
       result: response,
       processingDurationMs: getDurationInMs(startTime),
     });
     log.info(`Completed processing fact-chek job: ${jobId}`);
   } catch (error) {
+    let errorMsg = 'unkown error';
+    if (error instanceof Error) {
+      errorMsg = error.message;
+    }
     await updateFactCheckJob(jobId, {
       status: JobStatus.FAILED,
       processingDurationMs: getDurationInMs(startTime),
+      error: errorMsg,
     });
     throw error;
   }
