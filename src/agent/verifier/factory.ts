@@ -212,7 +212,7 @@ const buildVerifierAgent = async () => {
   return createAgent({
     model: llm,
     tools: [],
-    middleware: [modelCallLimitMiddleware({ runLimit: 3, exitBehavior: 'end' })],
+    middleware: [modelCallLimitMiddleware({ runLimit: 1, exitBehavior: 'end' })],
     systemPrompt: VERIFIER_SYSTEM_PROMPT2,
     responseFormat: VerifierResponseSchema,
   });

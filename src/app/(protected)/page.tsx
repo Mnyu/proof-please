@@ -23,9 +23,7 @@ const Home = () => {
   });
 
   const runProofPlease = async (formInput: ProofPlease) => {
-    console.log(formInput);
     const response = await submitProofPleaseJob(formInput);
-    console.log(response);
     if (response.success) {
       toast.success('Job submitted successfully', {
         duration: 1000,

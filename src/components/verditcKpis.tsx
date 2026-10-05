@@ -41,7 +41,7 @@ const VerdictKPIs = ({ proof }: VerdictKPIsProps) => {
         <CardHeader>
           <CardDescription className='font-semibold pb-2'>Claimed Facts</CardDescription>
           <CardTitle className='text-xl xl:text-2xl text-blue-950'>
-            {Object.keys(proof.verifierResponse.factResults).length}
+            {proof.verifierResponse.factResults.length}
           </CardTitle>
           {/* <CardDescription>20.1% from last month</CardDescription> */}
         </CardHeader>

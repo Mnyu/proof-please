@@ -110,6 +110,7 @@ export const ClaimedFactWithVerifiableSourcesSchema = z.object({
 export type ClaimedFactWithVerifiableSources = z.infer<typeof ClaimedFactWithVerifiableSourcesSchema>;
 
 export const VerifierResultSchema = z.object({
+  fact: z.string(),
   verdict: z.enum([
     Verdict.TRUE,
     Verdict.FALSE,
@@ -158,10 +159,11 @@ export const VerifierResponseSchema = z.object({
   //   .describe(
   //     'based on factResults, derive a message for instagram highlighting verdict of each fact along with citation',
   //   ),
-  factResults: z.record(
-    z.string().describe('the claimed fact for which the verifier result object belongs'),
-    VerifierResultSchema,
-  ),
+  factResults: z.array(VerifierResultSchema),
+  // factResults: z.record(
+  //   z.string().describe('the claimed fact for which the verifier result object belongs'),
+  //   VerifierResultSchema,
+  // ),
 });
 export type VerifierResponse = z.infer<typeof VerifierResponseSchema>;
 

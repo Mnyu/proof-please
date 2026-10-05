@@ -1,5 +1,5 @@
 import { config } from '@/config';
-import { LM_STUDIO } from '@/constants';
+import { LM_STUDIO, OPEN_AI } from '@/constants';
 import { log } from '@/observability/logger';
 import { ChatOpenAI } from '@langchain/openai';
 
@@ -17,8 +17,16 @@ const getExtractorLLM = () => {
         apiKey: process.env.EXTRACTOR_LLM_API_KEY,
       },
     });
+  } else if (provider === OPEN_AI) {
+    return new ChatOpenAI({
+      model: model,
+      temperature: 1,
+      configuration: {
+        apiKey: process.env.EXTRACTOR_LLM_API_KEY,
+      },
+    });
   }
-  throw new Error(`getExtractorLLM - no LLM providers other than ${LM_STUDIO} currently supported`);
+  throw new Error(`getExtractorLLM - no LLM providers other than ${LM_STUDIO}, ${OPEN_AI} are currently supported`);
 };
 
 const getVerifierLLM = () => {
@@ -35,8 +43,16 @@ const getVerifierLLM = () => {
         apiKey: process.env.VERIFIER_LLM_API_KEY,
       },
     });
+  } else if (provider === OPEN_AI) {
+    return new ChatOpenAI({
+      model: model,
+      temperature: 1,
+      configuration: {
+        apiKey: process.env.VERIFIER_LLM_API_KEY,
+      },
+    });
   }
-  throw new Error(`getVerifierLLM - no LLM providers other than ${LM_STUDIO} currently supported`);
+  throw new Error(`getVerifierLLM - no LLM providers other than ${LM_STUDIO}, ${OPEN_AI} are currently supporte`);
 };
 
 export { getExtractorLLM, getVerifierLLM };

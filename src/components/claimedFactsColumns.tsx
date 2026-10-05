@@ -4,7 +4,8 @@ import { ClaimedFactDTO } from '@/types/dto';
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from './ui/button';
 import { ExternalLink } from 'lucide-react';
-import VerdictTrueIcon from './verdictTrueIcon';
+import { VERDICT_SMALL_ICON_MAP } from './proofsColumns';
+import { Verdict } from '@/constants';
 
 export const claimedFactColumns: ColumnDef<ClaimedFactDTO>[] = [
   {
@@ -20,7 +21,7 @@ export const claimedFactColumns: ColumnDef<ClaimedFactDTO>[] = [
     header: 'Verdict',
     cell: ({ row }) => (
       <div className='flex flex-col gap-2 justify-center'>
-        <VerdictTrueIcon className='size-6' />
+        {VERDICT_SMALL_ICON_MAP[row.original.verdict as Verdict]}
         {row.original.verdict}
       </div>
     ),

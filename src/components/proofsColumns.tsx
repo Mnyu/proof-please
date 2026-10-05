@@ -6,6 +6,25 @@ import VerdictTrueIcon from './verdictTrueIcon';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Eye } from 'lucide-react';
+import { ReactNode } from 'react';
+import { JobStatus, Verdict } from '@/constants';
+import VerdictFalseIcon from './verdictFalseIcon';
+import VerdictMisleadingIcon from './verdictMisleadingIcon';
+import VerdictPartiallyTrueIcon from './verdictPartiallyTrueIcon';
+import VerdictOutdatedIcon from './verdictOutdatedIcon';
+import VerdictUnverifiableIcon from './verdictUnverifiableIcon';
+import VerdictSatireIcon from './verdictSatireIcon';
+
+export const VERDICT_SMALL_ICON_MAP: Record<Verdict, ReactNode> = {
+  [Verdict.TRUE]: <VerdictTrueIcon className='size-6' />,
+  [Verdict.FALSE]: <VerdictFalseIcon className='size-6' />,
+  [Verdict.MISLEADING]: <VerdictMisleadingIcon className='size-6' />,
+  [Verdict.PARTIALLY_TRUE]: <VerdictPartiallyTrueIcon className='size-6' />,
+  [Verdict.OUTDATED]: <VerdictOutdatedIcon className='size-6' />,
+  [Verdict.UNVERIFIABLE]: <VerdictUnverifiableIcon className='size-6' />,
+  [Verdict.SATIRE]: <VerdictSatireIcon className='size-6' />,
+  [Verdict.NONE]: <VerdictUnverifiableIcon className='size-6' />,
+};
 
 export const proofsColumns: ColumnDef<ProofDTO>[] = [
   {
@@ -24,7 +43,7 @@ export const proofsColumns: ColumnDef<ProofDTO>[] = [
       </div>
     ),
     meta: {
-      width: '200px',
+      width: '100px',
     },
   },
   {
@@ -48,8 +67,12 @@ export const proofsColumns: ColumnDef<ProofDTO>[] = [
     header: 'Verdict',
     cell: ({ row }) => (
       <div className='flex gap-2 items-center'>
-        <VerdictTrueIcon className='size-6' />
-        {row.original.verdict}
+        {row.original.status !== JobStatus.IN_PROGRESS && (
+          <>
+            {VERDICT_SMALL_ICON_MAP[row.original.verdict as Verdict]}
+            {row.original.verdict}
+          </>
+        )}
       </div>
     ),
     meta: {
@@ -71,9 +94,15 @@ export const proofsColumns: ColumnDef<ProofDTO>[] = [
       const proof = row.original;
       return (
         <div className='flex items-center'>
-          <Link href={`/proofs/${proof.id}`}>
-            <Eye size={16} />
-          </Link>
+          {proof.status === JobStatus.COMPLETED || proof.status === JobStatus.FAILED ? (
+            <Link href={`/proofs/${proof.id}`}>
+              <Eye size={16} />
+            </Link>
+          ) : (
+            <span className='cursor-not-allowed opacity-40'>
+              <Eye size={16} />
+            </span>
+          )}
         </div>
       );
     },
